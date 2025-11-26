@@ -104,18 +104,37 @@
         stroke-width: 1.5;
       }
 
-     /* ───────── Panels behave like blinds ───────── */
+      /* ───────── Roller-shade behavior for panels ───────── */
 
-.tab-panel {
-  display: none;
-  opacity: 0;
-}
+      main {
+        scroll-behavior: smooth;
+      }
 
-.tab-panel--active {
-  display: block;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
+      .tab-panel {
+        max-height: 80px; /* collapsed “rolled up” height */
+        overflow: hidden;
+        opacity: 0.7;
+        transition:
+          max-height 0.6s ease,
+          opacity 0.4s ease;
+        cursor: pointer;
+      }
+
+      .tab-panel--active {
+        max-height: 2400px; /* tall enough for content */
+        opacity: 1;
+        cursor: default;
+      }
+
+      @media (min-width: 1024px) {
+        .tab-panel {
+          max-height: 100px;
+        }
+
+        .tab-panel--active {
+          max-height: 2800px;
+        }
+      }
     </style>
 
     <style>
@@ -1087,7 +1106,7 @@
       </section>
     </main>
 
-    <!-- SIMPLE BLINDS-STYLE TAB LOGIC -->
+    <!-- ROLLER SHADE / TAB LOGIC -->
     <script>
       (function () {
         const tabs = Array.from(
@@ -1111,12 +1130,25 @@
               tab.dataset.panel === id
             );
           });
+
+          const active = document.getElementById(id);
+          if (active) {
+            active.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }
 
         tabs.forEach((tab) => {
           tab.addEventListener("click", () => {
             const target = tab.dataset.panel;
             setActivePanel(target);
+          });
+        });
+
+        // Also allow clicking directly on a collapsed section
+        panels.forEach((panel) => {
+          panel.addEventListener("click", () => {
+            if (panel.classList.contains("tab-panel--active")) return;
+            setActivePanel(panel.id);
           });
         });
 
@@ -1496,4 +1528,3 @@
     </script>
   </body>
 </html>
-
