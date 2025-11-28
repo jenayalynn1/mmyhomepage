@@ -108,7 +108,7 @@
 </head>
 <body>
     <main id="main-content" class="w-full">
-        <section class="hero-background relative min-h-full flex items-start justify-center py-28 px-6" style="position: relative; overflow: hidden;">
+        <section class="hero-background relative **min-h-screen** flex items-start justify-center py-28 px-6" style="position: relative; overflow: hidden;">
             <div class="absolute inset-0" style="background: linear-gradient(to top left, rgba(231, 203, 164, 0.55) 0%, rgba(79, 124, 137, 0.55) 100%); pointer-events: none;"></div>
             <div class="absolute bottom-0 left-0 right-0" style="height: 120px; background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.15) 50%, rgba(0, 0, 0, 0.1) 100%); pointer-events: none;"></div>
             <button class="toggle-button" onclick="toggleBlind('hero-content')" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30; background-color: transparent; color: #C46A31; border: none; padding: 12px 24px; cursor: pointer; font-size: 56px; font-weight: 500; transition: all 0.3s ease; text-shadow: 3px 3px 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(231, 203, 164, 0.6);" onmouseover="this.style.color='#F6EEE4'; this.style.transform='translate(-50%, -50%) scale(1.05)'" onmouseout="this.style.color='#C46A31'; this.style.transform='translate(-50%, -50%) scale(1)'"> What's going on with me? </button>
@@ -164,7 +164,7 @@
         freq_column3_title: "You're ready to see your real self.",
         freq_column3_copy: "A new identity is forming. My work is helping you understand it — clearly, calmly, deeply.",
         who_headline: "I'm the grounded mirror your system has been searching for.",
-        who_copy: "I ground your depth so it becomes direction, not noise.|I will help you stabilize your frequency so you don't have to hide it.|I will help you contain your perceptive flow so it becomes clarity instead of overwhelm.|I will help you steady your intuition by showing you the structure it's been sensing.",
+        who_copy: "I ground your depth so it becomes direction, not noise.|I will help you stabilize your frequency so you don't havew to hide it.|I will help you contain your perceptive flow so it becomes clarity instead of overwhelm.|I will help you steady your intuition by showing you the structure it's been sensing.",
         who_credentials: "As a Certified Clinical Hypnotherapist, and a member of the American Hypnosis Association, I have dedicated of a thousand combined hours of study and practice to ensure the best outcomes for my clients. You will be seen, you will be heard, you will be understood.",
         work_headline: "Paths of Transformation",
         transform_headline: "Your identity isn't breaking. It's updating.",
@@ -200,9 +200,9 @@
         document.getElementById('booking-modal').close();
     });
 
-    // Data Integration Script (Reconstructed to handle all elements)
+    // Data Integration Script (Only runs if elements are present, ensuring safety)
     function applyConfig(config) {
-        // Only apply config to elements present in the final HTML (Hero section only in main content)
+        // Hero section elements
         const heroHeadline = document.getElementById('hero-headline');
         if (heroHeadline) heroHeadline.textContent = config.hero_headline || defaultConfig.hero_headline;
 
@@ -212,9 +212,7 @@
         const heroButton = document.getElementById('hero-button');
         if (heroButton) heroButton.textContent = config.hero_button || defaultConfig.hero_button;
 
-        // The following elements for other sections are not present in the HTML,
-        // but the script includes checks to prevent errors if they are missing.
-
+        // Remaining elements (ignored as they are not in the HTML, but code is preserved with checks)
         const identityTitle = document.getElementById('identity-title');
         if (identityTitle) identityTitle.textContent = config.identity_title || defaultConfig.identity_title;
 
