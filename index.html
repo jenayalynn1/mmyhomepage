@@ -7,23 +7,25 @@
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script><!-- GOOGLE FONT: SOFIA -->
   <link href="https://fonts.googleapis.com/css2?family=Sofia&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sofia&amp;family=Hind+Siliguri:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
   <style>
   body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Hind Siliguri', Sans-Serif;
   }
 
   .toggle-button {
     font-family: 'Sofia', cursive;
-    max-width: 1280px;
-    width: calc(100% - 48px);
+    max-width: 1300px;
+    width: calc(100% - 58px);
     white-space: normal;
     line-height: 1.2;
     text-align: center;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
     
     * {
@@ -127,9 +129,9 @@
   <main id="main-content" class="w-full"><!-- HERO SECTION -->
    <section class="hero-background relative min-h-full flex items-start justify-center py-28 px-6" style="position: relative; overflow: hidden;"><!-- Translucent Gradient Overlay -->
     <div class="absolute inset-0" style="background: linear-gradient(to top left, rgba(231, 203, 164, 0.55) 0%, rgba(79, 124, 137, 0.55) 100%); pointer-events: none;"></div><!-- Curved Lighting Effect -->
-    <div class="absolute bottom-0 left-0 right-0" style="height: 120px; background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.15) 50%, rgba(0, 0, 0, 0.1) 100%); pointer-events: none;"></div><!-- Toggle Button --> <button class="toggle-button" onclick="toggleBlind('hero-content')" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30; background-color: transparent; color: #C46A31; border: none; padding: 6px 12px; cursor: pointer; font-size: 56px; font-weight: 500; transition: all 0.3s ease; text-shadow: 3px 3px 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(231, 203, 164, 0.6);" onmouseover="this.style.color='#F6EEE4'; this.style.transform='translate(-50%, -50%) scale(1.05)'" onmouseout="this.style.color='#C46A31'; this.style.transform='translate(-50%, -50%) scale(1)'"> What's going on with me? </button>
+    <div class="absolute bottom-0 left-0 right-0" style="height: 120px; background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.15) 50%, rgba(0, 0, 0, 0.1) 100%); pointer-events: none;"></div><!-- Toggle Button --> <button class="toggle-button" onclick="toggleBlind('hero-content')" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30; background-color: transparent; color: #C46A31; border: none; padding: 6px 12px; cursor: pointer; font-size: 50px; font-weight: 400; transition: all 0.3s ease; text-shadow: 3px 3px 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(231, 203, 164, 0.6);" onmouseover="this.style.color='#F6EEE4'; this.style.transform='translate(-50%, -50%) scale(1.05)'" onmouseout="this.style.color='#C46A31'; this.style.transform='translate(-50%, -50%) scale(1)'"> What's going on with me? </button>
     <div id="hero-content" class="relative z-10 text-center max-w-4xl blind-content collapsed">
-     <h1 id="hero-headline" class="text-5xl md:text-7xl font-light mb-24" style="color: #3C3A37; line-height: 1.3; font-family: Georgia, serif; letter-spacing: -0.02em;">You're not lost. You're becoming.</h1>
+     <h1 id="hero-headline" class="text-5xl md:text-7xl font-light mb-24" style="color: #3C3A37; line-height: 1.3; font-family: Hind Siliguri, sans-serif; letter-spacing: -0.02em;">You're not lost. You're becoming.</h1>
      <p id="hero-subheadline" class="text-xl md:text-2xl font-light mb-12 max-w-3xl mx-auto leading-relaxed" style="color: #FFFFFF; font-weight: 400; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);">You sense more, feel more, and think in deeper layers than most people can track. You're here because you're ready to be understood clearly.</p><a href="#cta" id="hero-button" class="btn-primary px-12 py-5 text-lg font-normal rounded-full" style="background-color: #E7CBA4; color: #3C3A37; letter-spacing: 0.02em; box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);" onclick="openSchedulingPopup(event)"> Book My Free Call </a>
     </div>
    </section><!-- IDENTITY MIRROR SECTION -->
@@ -479,7 +481,7 @@
             const btn = parentSection.querySelector('.toggle-button');
             if (btn) {
               btn.style.top = '50%';
-              btn.style.fontSize = '56px';
+              btn.style.fontSize = '46px';
               // Always use translate(-50%, -50%) for centering when collapsed
               btn.style.transform = 'translate(-50%, -50%)';
             }
@@ -589,5 +591,4 @@
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a5c0f10433f12cf',t:'MTc2NDM1NTkwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
 
