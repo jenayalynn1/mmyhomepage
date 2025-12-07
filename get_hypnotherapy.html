@@ -1769,39 +1769,17 @@ fetch("https://script.google.com/macros/s/AKfycbxYdhYxcwdabNaJ46LTGvTavR0K6xyTSZ
   method: "POST",
   mode: "no-cors",
   headers: {
-    // simple content type so the browser doesn't do a CORS preflight
-    "Content-Type": "text/plain;charset=utf-8"
+    "Content-Type": "text/plain"
   },
   body: JSON.stringify(applicationData)
 })
   .then(() => {
-    console.log("Posted to Google Script (no-cors, response not readable).");
+    // We can't read the response in no-cors mode.
+    console.log("Posted to Google Script (no-cors; response not readable).");
   })
   .catch(error => {
     console.error("Error posting to Google Script:", error);
   });
-
-submitBtn.disabled = false;
-submitBtn.innerHTML = originalText;
-
-
-if (result && result.isOk) {
-showSuccess(quizResult);
-} else {
-const errorMessage = document.createElement('div');
-errorMessage.className = 'card';
-errorMessage.style.backgroundColor = '#f0e1cc';
-errorMessage.style.marginTop = '1rem';
-errorMessage.style.textAlign = 'center';
-errorMessage.innerHTML = `
-<div style="color: #8b5e3c; font-weight: 500;">
-There was an error submitting your application. Please try again.
-</div>
-`;
-document.getElementById('form-container').appendChild(errorMessage);
-}
-}
-
 
 function resetForm() {
 document.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], input[type="date"], textarea')
