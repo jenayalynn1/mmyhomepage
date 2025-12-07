@@ -1762,14 +1762,14 @@ const applicationData = {
   submitted_at: new Date().toISOString()
 };
 
-  // ----------------------------------------------------
+// ----------------------------------------------------
 // Send application data to Google Sheets via Apps Script
 // ----------------------------------------------------
 fetch("https://script.google.com/macros/s/AKfycbxYdhYxcwdabNaJ46LTGvTavR0K6xyTSZCtoBPqGICkBa6kxOfmNo8rSEQS_LCrsppwqg/exec", {
   method: "POST",
   mode: "no-cors",
   headers: {
-    // Use a "simple" content type so the browser doesn't do a CORS preflight
+    // simple content type so the browser doesn't do a CORS preflight
     "Content-Type": "text/plain;charset=utf-8"
   },
   body: JSON.stringify(applicationData)
