@@ -431,6 +431,14 @@ border-bottom: none;
 <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
 </head>
 <body>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const forms = document.getElementsByTagName("form");
+  if (forms.length > 0) {
+    forms[0].addEventListener("submit", (event) => event.preventDefault());
+  }
+});
+</script>
 <div class="app-root">
 <div class="page">
 <div class="quiz-container">
