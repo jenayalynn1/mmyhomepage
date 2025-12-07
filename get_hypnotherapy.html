@@ -831,1261 +831,1344 @@ Affordability <span class="required">*</span>
 </div>
 </div>
 
-
 <script>
-const defaultConfig = {
-form_title: "Hypnotherapy Application",
-form_subtitle: "Let's make sure we are aligned.\nIf for any reason we aren't able to work together, I can refer you to other great hypnotherapists.",
-submit_button_text: "Submit Application",
-background_color: "#f7efe6",
-surface_color: "#ffffff",
-text_color: "#111827",
-primary_action_color: "#000000",
-secondary_action_color: "#8b5e3c"
-};
-
-
-let currentRecordCount = 0;
-let currentPage = 1;
-const totalPages = 6;
-
-const selections = {
-  frameworkUnderstanding: null,
-  supportSeeking: null,
-  memoriesBefore: null,
-  boundaries: new Set(),
-  faultBeliefs: null,
-  privateSpace: null,
-  willingness: null,
-  readiness: null,
-  commitment: null,
-  moneyCommunication: null,
-  affordabilityPreference: null,
-  referred: null,
-  pronouns: null,
-  trustedPerson: null
-};
-
-const quizAnswers = {
-q1: null, q2: null, q3: null, q4: null, q5: null, q6: null,
-q7: null, q8: null, q9: null, q10: null, q11: null, q12: null
-};
-
-
-const quizQuestions = [
-{
-id: 'q1',
-text: 'When something goes wrong',
-options: [
-{ value: 'being', label: 'I think about it a lot and wonder what it means about me.' },
-{ value: 'flowing', label: 'I hurry to fix it or make everyone feel better.' },
-{ value: 'trusting', label: "I plan what to do next so it won't happen again." }
-]
-},
-{
-id: 'q2',
-text: 'When someone is upset with me',
-options: [
-{ value: 'trusting', label: 'I explain what I meant and take charge to fix it.' },
-{ value: 'being', label: 'I go over what I said and worry how it sounded.' },
-{ value: 'flowing', label: 'I say sorry fast and try to make peace.' }
-]
-},
-{
-id: 'q3',
-text: 'When I feel nervous or off balance',
-options: [
-{ value: 'flowing', label: 'I stay busy helping others.' },
-{ value: 'trusting', label: 'I clean up or plan to feel in control again.' },
-{ value: 'being', label: 'I think about every reason I might feel this way.' }
-]
-},
-{
-id: 'q4',
-text: 'When I make a mistake',
-options: [
-{ value: 'being', label: 'I feel bad and think hard about why it happened.' },
-{ value: 'flowing', label: 'I try even harder to make up for it.' },
-{ value: 'trusting', label: "I set new rules so it won't happen again." }
-]
-},
-{
-id: 'q5',
-text: 'When someone lets me down',
-options: [
-{ value: 'trusting', label: 'I make new rules or step back to stay safe.' },
-{ value: 'being', label: 'I wonder why they did that.' },
-{ value: 'flowing', label: 'I forgive them and do the extra work myself.' }
-]
-},
-{
-id: 'q6',
-text: 'When life slows down',
-options: [
-{ value: 'flowing', label: 'I look for someone or something that still needs me.' },
-{ value: 'trusting', label: 'I get restless and find something to do.' },
-{ value: 'being', label: 'I start thinking deeply and lose track of time.' }
-]
-},
-{
-id: 'q7',
-text: "When people don't understand me",
-options: [
-{ value: 'being', label: 'I wonder what I did wrong.' },
-{ value: 'flowing', label: 'I explain myself again and again to make peace.' },
-{ value: 'trusting', label: "I set things straight so it won't happen next time." }
-]
-},
-{
-id: 'q8',
-text: 'When there is conflict',
-options: [
-{ value: 'trusting', label: 'I set clear limits to stop the fight.' },
-{ value: 'being', label: "I try to understand everyone's side first." },
-{ value: 'flowing', label: 'I make peace, even if it costs me.' }
-]
-},
-{
-id: 'q9',
-text: 'When I succeed at something',
-options: [
-{ value: 'flowing', label: 'I think about how to use it to help others.' },
-{ value: 'trusting', label: 'I make a new goal to keep going.' },
-{ value: 'being', label: 'I ask myself what this says about me.' }
-]
-},
-{
-id: 'q10',
-text: 'When change is coming',
-options: [
-{ value: 'being', label: 'I look for the lesson in it.' },
-{ value: 'flowing', label: 'I go along and help others feel okay.' },
-{ value: 'trusting', label: 'I plan ahead for what might happen.' }
-]
-},
-{
-id: 'q11',
-text: "My thoughts when I'm stressed",
-options: [
-{ value: 'trusting', label: '"I need to take control right now."' },
-{ value: 'being', label: '"Why am I like this? I should know better."' },
-{ value: 'flowing', label: '"I can fix this if I keep trying."' }
-]
-},
-{
-id: 'q12',
-text: 'Deep down, when things are hard',
-options: [
-{ value: 'flowing', label: 'I feel worried until everyone else is okay.' },
-{ value: 'trusting', label: 'I feel tight and under pressure to hold things together.' },
-{ value: 'being', label: "I feel sad or ashamed I can't fix it." }
-]
-}
-];
-
-
-const formData = {
-frameworkUnderstanding: [
-{ value: "comfortable", label: "Yes, I am comfortable with this approach" },
-{ value: "open", label: "I'm open to exploring this perspective" },
-{ value: "unsure", label: "I'm unsure but willing to learn more" }
-],
-supportSeeking: [
-{ value: "damaging-experiences", label: "Damaging past experiences" },
-{ value: "recovering-religion", label: "Recovering from religion" },
-{ value: "other", label: "Other", hasInput: true }
-],
-memoriesBefore: [
-{ value: "yes", label: "Yes" },
-{ value: "no", label: "No" }
-],
-boundaries: [
-{ value: "non-existent", label: "Non-existent" },
-{ value: "weak", label: "Weak" },
-{ value: "strong", label: "Strong" },
-{ value: "healthy", label: "Healthy" },
-{ value: "unhealthy", label: "Unhealthy" }
-],
-faultBeliefs: [
-{ value: "my-fault", label: "...the cause of my pain." },
-{ value: "someone-else-fault", label: "...what I can do to heal myself." }
-],
-privateSpace: [
-{ value: "yes", label: "Yes" },
-{ value: "no", label: "No" }
-],
-willingness: [
-{ value: "willing", label: "I'm willing — even if it's uncomfortable." },
-{ value: "unsure", label: "I'm unsure, but I want to try." },
-{ value: "stay-comfortable", label: "I prefer to stay comfortable right now." }
-],
-readiness: [
-{ value: "small-time", label: "Up to 45 minutes a week." },
-{ value: "steady-weekly", label: "Up to 90 minutes a week." },
-{ value: "fully-ready", label: "Up to 2.5 hours a week." }
-],
-commitment: [
-{ value: "commit-12-weeks", label: "I am ready to commit 12-weeks to my transformation." },
-{ value: "commit-6-weeks", label: "I am ready to commit 6-weeks to my transformation." },
-{ value: "not-yet", label: "Not yet, but I’d like to plan this for another time." }
-],
-moneyCommunication: [
-{ value: "video", label: "Face-to-face virtually." },
-{ value: "phone", label: "Voice call on the phone." },
-{ value: "email", label: "Reading via email." }
-],
-affordabilityPreference: [
-{ value: "full-price", label: "I would like to pay full price." },
-{ value: "income-docs", label: "I would like to submit my income documents for pricing consideration." }
-],
-referred: [
-{ value: "yes", label: "Yes" },
-{ value: "no", label: "No" }
-],
-pronouns: [
-{ value: "she-her", label: "She/Her" },
-{ value: "he-him", label: "He/Him" },
-{ value: "they", label: "They" }
-],
-trustedPerson: [
-{ value: "yes", label: "Yes" },
-{ value: "no", label: "No" }
-]
-};
-
-
-const quizResultProfiles = {
-"Being > Flowing": {
-title: "🔥 Your Flight Direction is toward Being and Flowing",
-coreMovement: "Your flight direction is toward Being and Flowing. You grow by settling into who you are and letting that truth move into your life with ease. When your presence is honest and unforced, expression becomes lighter and more natural.",
-practices: "• Lean into choices that feel authentic in the moment.\n• Invite simple expressions of your truth without overthinking.\n• Choose small areas of your life to move with more ease.\n• Let your presence be enough before you try to \"do\" anything.",
-posture: "A steady, relaxed openness that allows clarity and ease to work together.",
-mantra: "“My truth moves naturally when I let myself be.”"
-},
-"Being > Trusting": {
-title: "🔥 Your Flight Direction is toward Being & Trusting",
-coreMovement: "Your flight direction is toward Being and Trusting. You strengthen your clarity first and then let trust take shape from that clarity. Support becomes easier to receive when you're rooted in who you are.",
-practices: "• Lean into moments that confirm your sense of self.\n• Invite small experiences of safe connection.\n• Choose trust at a pace that feels grounded and real.\n• Let yourself rely on others one step at a time.",
-posture: "Grounded openness that doesn't rush or force itself.",
-mantra: "“Trust grows naturally when I stand in my truth.”"
-},
-"Trusting > Being": {
-title: "🔥 Your Flight Direction is toward Trusting & Being",
-coreMovement: "Your flight direction is toward Trusting and Being. You open yourself to experience, and that openness helps you understand who you're becoming. Your identity grows from the moments you allow in.",
-practices: "• Lean into curiosity about what feels true for you.\n• Invite new experiences without pressure to commit.\n• Choose reflection after exploration, not before it.\n• Let identity form from honest lived moments.",
-posture: "Gentle courage that welcomes new information about yourself.",
-mantra: "“I discover myself through what I let in.”"
-},
-"Trusting > Flowing": {
-title: "🔥 Your Flight Direction is toward Trusting & Flowing",
-coreMovement: "Your flight direction is toward Trusting and Flowing. When you let yourself trust the moment, your energy softens and moves more freely. Ease shows up when you stop bracing and follow what feels aligned.",
-practices: "• Lean into your instinct when something feels right.\n• Invite small moments of ease throughout your day.\n• Choose expression without worrying about perfection.\n• Let trust support the pace of your movement.",
-posture: "Soft confidence that lets rhythm develop naturally.",
-mantra: "“Ease finds me when I trust the moment I'm in.”"
-},
-"Flowing > Being": {
-title: "🔥 Your Flight Direction is toward Flowing & Being",
-coreMovement: "Your flight direction is toward Flowing and Being. You sense your way forward and then let that rhythm help you understand yourself more clearly. Your identity settles naturally when you listen to what feels true.",
-practices: "• Lean into the movements and choices that feel alive for you.\n• Invite stillness afterward to understand their meaning.\n• Choose identity from experience, not expectation.\n• Let your rhythm guide what becomes real for you.",
-posture: "Attuned presence that listens inwardly.",
-mantra: "“My rhythm reveals who I am.”"
-},
-"Flowing > Trusting": {
-title: "🔥 Your Flight Direction is toward Flowing & Trusting",
-coreMovement: "Your flight direction is toward Flowing and Trusting. You follow the rhythm of your own movement, and trust grows once something feels aligned in your body. You open up at the pace that fits your aspirational rhythm.",
-practices: "• Lean into embodied decisions that feel steady.\n• Invite support after you feel the internal yes.\n• Choose connection that respects your natural pace.\n• Let trust emerge from your felt sense, not pressure.",
-posture: "Intuitive openness guided by bodily alignment.",
-mantra: "“I trust what aligns with my rhythm.”"
-},
-"Being = Flowing": {
-title: "🔥 Your Flight Direction is toward Being & Flowing",
-coreMovement: "Your flight direction balances Being and Flowing. You move from authenticity and anchor your expression in truth. Identity and rhythm harmonize — you don't separate who you are from how you move through the world.",
-practices: "• Lean into movements that feel alive and honest.\n• Invite stillness when meaning wants to settle.\n• Choose expression that reflects inner clarity.\n• Let your rhythm confirm your reality.",
-posture: "Embodied authenticity — fluid and true.",
-mantra: "“My movement and my truth are one.”"
-},
-"Being = Trusting": {
-title: "🔥 Your Flight Direction is toward Being & Trusting",
-coreMovement: "Your flight direction balances Trusting and Being. You meet the world with an open heart while staying rooted in yourself. Openness does not cost identity — identity does not close you. You receive and remain, equally.",
-practices: "• Lean into connection without needing to merge.\n• Invite moments of reflection without retreating.\n• Choose relationships that honor your truth and your tenderness.\n• Let trust be steady and selfhood be soft.",
-posture: "Open presence, grounded and clear.",
-mantra: "“I stay myself as I let life in.”"
-},
-"Trusting = Being": {
-title: "🔥 Your Flight Direction is toward Trusting & Being",
-coreMovement: "Your flight direction balances Trusting and Being. You meet the world with an open heart while staying rooted in yourself. Openness does not cost identity — identity does not close you. You receive and remain, equally.",
-practices: "• Lean into connection without needing to merge.\n• Invite moments of reflection without retreating.\n• Choose relationships that honor your truth and your tenderness.\n• Let trust be steady and selfhood be soft.",
-posture: "Open presence, grounded and clear.",
-mantra: "“I stay myself as I let life in.”"
-},
-"Trusting = Flowing": {
-title: "🔥 Your Flight Direction is toward Flowing & Trusting",
-coreMovement: "Your flight direction balances Flowing and Trusting. Ease and openness rise together — you soften into connection without forcing closeness or speed. You move with the moment and let trust travel beside you.",
-practices: "• Lean into gentle momentum rather than urgency.\n• Invite connection at the pace your body enjoys.\n• Choose expression that feels safe and alive.\n• Let trust breathe with your rhythm.",
-posture: "Soft fluidity anchored in receptivity.",
-mantra: "“Trust moves with me, not ahead of me.”"
-},
-"Flowing = Being": {
-title: "🔥 Your Flight Direction is toward Flowing & Being",
-coreMovement: "Your flight direction balances Flowing and Being. You move from authenticity and anchor your expression in truth. Identity and rhythm harmonize — you don't separate who you are from how you move through the world.",
-practices: "• Lean into movements that feel alive and honest.\n• Invite stillness when meaning wants to settle.\n• Choose expression that reflects inner clarity.\n• Let your rhythm confirm your reality.",
-posture: "Embodied authenticity — fluid and true.",
-mantra: "“My movement and my truth are one.”"
-},
-"Flowing = Trusting": {
-title: "🔥 Your Flight Direction is toward Flowing & Trusting",
-coreMovement: "Your flight direction balances Flowing and Trusting. Ease and openness rise together — you soften into connection without forcing closeness or speed. You move with the moment and let trust travel beside you.",
-practices: "• Lean into gentle momentum rather than urgency.\n• Invite connection at the pace your body enjoys.\n• Choose expression that feels safe and alive.\n• Let trust breathe with your rhythm.",
-posture: "Soft fluidity anchored in receptivity.",
-mantra: "“Trust moves with me, not ahead of me.”"
-},
-"Being = Flowing = Trusting": {
-title: "🔥 Your Flight Direction is toward Being & Flowing & Trusting",
-coreMovement: "Your flight direction holds Being, Flowing, and Trusting as equals. You stand as yourself, move as yourself, and open as yourself — not in sequence, but together. Identity, rhythm, and receptivity form one living field.",
-practices: "• Lean into choices that feel true, alive, and safe.\n• Invite movement without losing presence.\n• Choose trust without abandoning clarity.\n• Let your whole self participate in every moment.",
-posture: "Unified coherence — whole, moving, open.",
-mantra: "“I am steady, I am flowing, I am receiving — as one.”"
-}
-};
-
-
-function goToPage(pageNum) {
-const existingError = document.getElementById('validation-error-card');
-if (existingError) existingError.remove();
-
-
-for (let i = 1; i <= totalPages; i++) {
-const page = document.getElementById(`page-${i}`);
-if (page) page.classList.remove('active');
-}
-const targetPage = document.getElementById(`page-${pageNum}`);
-if (targetPage) {
-targetPage.classList.add('active');
-currentPage = pageNum;
-const progress = document.getElementById('progress-indicator');
-if (progress) progress.textContent = `Page ${pageNum} of ${totalPages}`;
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-}
-
-
-function showProfilesView() {
-document.getElementById('form-container').style.display = 'none';
-document.getElementById('profiles-view').style.display = 'block';
-renderAllProfiles();
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-
-function hideProfilesView() {
-document.getElementById('profiles-view').style.display = 'none';
-document.getElementById('form-container').style.display = 'block';
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-
-function renderAllProfiles() {
-const container = document.getElementById('all-profiles-container');
-if (!container) return;
-
-
-let html = '';
-for (const [, profile] of Object.entries(quizResultProfiles)) {
-html += `
-<div class="profile-section">
-<div style="text-align: center; font-size: 1.5rem; margin-bottom: 1.5rem; color: #8b5e3c;">${profile.title}</div>
-<div style="margin-bottom: 1.5rem;">
-<div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">🌬 Core Movement</div>
-<div style="line-height: 1.7; color: #3f3f46;">${profile.coreMovement}</div>
-</div>
-<div style="margin-bottom: 1.5rem;">
-<div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">🕊️ Aligned Practices</div>
-<div style="line-height: 1.7; color: #3f3f46;">
-${profile.practices.split('\n').map(line => `<div style="margin-bottom: 0.35rem;">${line}</div>`).join('')}
-</div>
-</div>
-<div style="margin-bottom: 1.5rem;">
-<div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">💛 Aspirational Posture</div>
-<div style="line-height: 1.7; color: #3f3f46;">${profile.posture}</div>
-</div>
-<div>
-<div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">🔥 Momentum Mantra</div>
-<div style="line-height: 1.7; color: #3f3f46; font-style: italic;">${profile.mantra}</div>
-</div>
-</div>
-`;
-}
-container.innerHTML = html;
-}
-
-
-function renderQuizQuestion(containerId, question) {
-const container = document.getElementById(containerId);
-if (!container) return;
-container.innerHTML = question.options.map(opt => `
-<div class="option-row" data-question="${question.id}" data-value="${opt.value}">
-<div class="radio"><div class="radio-dot"></div></div>
-<span class="option-text">${opt.label}</span>
-</div>
-`).join('');
-container.querySelectorAll('.option-row').forEach(row => {
-row.addEventListener('click', (e) => handleQuizClick(e, question.id));
-});
-}
-
-
-function handleQuizClick(e, questionId) {
-const row = e.target.closest('.option-row');
-if (!row) return;
-const value = row.dataset.value;
-const container = row.parentElement;
-container.querySelectorAll('.option-row').forEach(r => {
-r.classList.remove('option-selected');
-r.querySelector('.radio').classList.remove('radio-selected');
-r.querySelector('.radio-dot').style.display = 'none';
-});
-row.classList.add('option-selected');
-row.querySelector('.radio').classList.add('radio-selected');
-row.querySelector('.radio-dot').style.display = 'block';
-quizAnswers[questionId] = value;
-}
-
-
-function calculateQuizResult() {
-const scores = { being: 0, flowing: 0, trusting: 0 };
-for (const key in quizAnswers) {
-if (quizAnswers[key]) {
-scores[quizAnswers[key]]++;
-}
-}
-const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-const [firstType, firstScore] = entries[0];
-const [secondType, secondScore] = entries[1];
-const [thirdType, thirdScore] = entries[2];
-const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-
-if (firstScore === secondScore && secondScore === thirdScore) {
-return "Being = Flowing = Trusting";
-}
-
-
-if (firstScore === secondScore && firstScore > thirdScore) {
-const pair = [firstType, secondType].sort();
-return `${cap(pair[0])} = ${cap(pair[1])}`;
-}
-
-
-return `${cap(firstType)} > ${cap(secondType)}`;
-}
-
-
-function displayQuizResult(resultKey) {
-const profile = quizResultProfiles[resultKey];
-if (profile) {
-document.getElementById('result-title').textContent = profile.title;
-document.getElementById('result-core-movement').textContent = profile.coreMovement;
-const practicesEl = document.getElementById('result-practices');
-practicesEl.innerHTML = profile.practices.split('\n')
-.map(line => `<div style="margin-bottom: 0.5rem;">${line}</div>`)
-.join('');
-document.getElementById('result-posture').textContent = profile.posture;
-document.getElementById('result-mantra').textContent = profile.mantra;
-} else {
-document.getElementById('quiz-result-card').style.display = 'none';
-}
-}
-
-
-function showSuccess(quizResult) {
-document.getElementById('form-pages').style.display = 'none';
-document.getElementById('success-container').style.display = 'block';
-displayQuizResult(quizResult);
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-
-function renderRadioOptions(containerId, options, selectionKey) {
-const container = document.getElementById(containerId);
-if (!container) return;
-container.innerHTML = options.map(opt => `
-<div class="option-row" data-type="${selectionKey}" data-value="${opt.value}">
-<div class="radio"><div class="radio-dot"></div></div>
-<span class="option-text">${opt.label}</span>
-${opt.hasInput ? '<input type="text" class="form-input-inline" id="support-other-input" placeholder="Please specify..." style="display: none;" />' : ''}
-</div>
-`).join('');
-container.querySelectorAll('.option-row').forEach(row => {
-row.addEventListener('click', (e) => handleRadioClick(e, selectionKey));
-});
-}
-
-
-function renderInlineRadioOptions(containerId, options, selectionKey) {
-const container = document.getElementById(containerId);
-if (!container) return;
-container.innerHTML = options.map(opt => `
-<div class="inline-radio-option" data-type="${selectionKey}" data-value="${opt.value}">
-<div class="radio"><div class="radio-dot"></div></div>
-<span class="option-text">${opt.label}</span>
-</div>
-`).join('');
-container.querySelectorAll('.inline-radio-option').forEach(row => {
-row.addEventListener('click', (e) => handleInlineRadioClick(e, selectionKey));
-});
-}
-
-
-function renderCheckboxOptions(containerId, options, selectionKey) {
-const container = document.getElementById(containerId);
-if (!container) return;
-container.innerHTML = options.map(opt => `
-<div class="option-row" data-type="${selectionKey}" data-value="${opt.value}">
-<div class="checkbox"><span class="checkbox-mark">✓</span></div>
-<span class="option-text">${opt.label}</span>
-</div>
-`).join('');
-container.querySelectorAll('.option-row').forEach(row => {
-row.addEventListener('click', (e) => handleCheckboxClick(e, selectionKey));
-});
-}
-
-
-function handleRadioClick(e, selectionKey) {
-const row = e.target.closest('.option-row');
-if (!row) return;
-const value = row.dataset.value;
-const container = row.parentElement;
-
-
-container.querySelectorAll('.option-row').forEach(r => {
-r.classList.remove('option-selected');
-const radio = r.querySelector('.radio');
-if (radio) {
-radio.classList.remove('radio-selected');
-radio.querySelector('.radio-dot').style.display = 'none';
-}
-const input = r.querySelector('.form-input-inline');
-if (input) input.style.display = 'none';
-});
-
-
-row.classList.add('option-selected');
-const radio = row.querySelector('.radio');
-if (radio) {
-radio.classList.add('radio-selected');
-radio.querySelector('.radio-dot').style.display = 'block';
-}
-
-
-selections[selectionKey] = value;
-
-
-if (value === 'other') {
-const otherInput = document.getElementById('support-other-input');
-if (otherInput) otherInput.style.display = 'block';
-}
-
-
-if (selectionKey === 'referred') {
-const referrerBlock = document.getElementById('referrer-block');
-const referrerInput = document.getElementById('referrer-name');
-if (value === 'yes') {
-referrerBlock.style.display = 'block';
-referrerInput.required = true;
-} else {
-referrerBlock.style.display = 'none';
-referrerInput.required = false;
-referrerInput.value = '';
-}
-}
-}
-
-
-function handleInlineRadioClick(e, selectionKey) {
-const row = e.target.closest('.inline-radio-option');
-if (!row) return;
-const value = row.dataset.value;
-const container = row.parentElement;
-
-
-container.querySelectorAll('.inline-radio-option').forEach(r => {
-r.classList.remove('inline-radio-selected');
-const radio = r.querySelector('.radio');
-if (radio) {
-radio.classList.remove('radio-selected');
-const dot = radio.querySelector('.radio-dot');
-if (dot) dot.style.display = 'none';
-}
-});
-
-
-row.classList.add('inline-radio-selected');
-const radio = row.querySelector('.radio');
-if (radio) {
-radio.classList.add('radio-selected');
-const dot = radio.querySelector('.radio-dot');
-if (dot) dot.style.display = 'block';
-}
-
-
-selections[selectionKey] = value;
-
-
-if (selectionKey === 'referred') {
-const referrerBlock = document.getElementById('referrer-block');
-const referrerInput = document.getElementById('referrer-name');
-if (value === 'yes') {
-referrerBlock.style.display = 'block';
-referrerInput.required = true;
-} else {
-referrerBlock.style.display = 'none';
-referrerInput.required = false;
-referrerInput.value = '';
-}
-}
-
-
-if (selectionKey === 'memoriesBefore') {
-const memBlock = document.getElementById('memories-explanation-block');
-const memTextarea = document.getElementById('memories-explanation');
-if (memBlock && memTextarea) {
-if (value === 'yes') {
-memBlock.style.display = 'block';
-memTextarea.required = true;
-} else {
-memBlock.style.display = 'none';
-memTextarea.required = false;
-memTextarea.value = '';
-}
-}
-}
-
-
-if (selectionKey === 'trustedPerson') {
-const detailsBlock = document.getElementById('trusted-person-details-block');
-const personInput = document.getElementById('trusted-person');
-const descInput = document.getElementById('trusted-person-description');
-if (detailsBlock && personInput && descInput) {
-if (value === 'yes') {
-detailsBlock.style.display = 'block';
-personInput.required = true;
-descInput.required = true;
-} else {
-detailsBlock.style.display = 'none';
-personInput.required = false;
-descInput.required = false;
-personInput.value = '';
-descInput.value = '';
-}
-}
-}
-}
-
-
-function handleCheckboxClick(e, selectionKey) {
-const row = e.target.closest('.option-row');
-if (!row) return;
-const value = row.dataset.value;
-const checkbox = row.querySelector('.checkbox');
-const checkMark = row.querySelector('.checkbox-mark');
-
-
-if (selections[selectionKey].has(value)) {
-selections[selectionKey].delete(value);
-row.classList.remove('option-selected');
-checkbox.classList.remove('checkbox-selected');
-checkMark.style.display = 'none';
-} else {
-selections[selectionKey].add(value);
-row.classList.add('option-selected');
-checkbox.classList.add('checkbox-selected');
-checkMark.style.display = 'block';
-}
-}
-
-
-function showErrors(errors) {
-const container = document.getElementById('form-container');
-if (!container) return;
-
-
-const existing = document.getElementById('validation-error-card');
-if (existing) existing.remove();
-
-
-const errorMessage = document.createElement('div');
-errorMessage.id = 'validation-error-card';
-errorMessage.className = 'card';
-errorMessage.style.backgroundColor = '#f0e1cc';
-errorMessage.style.marginTop = '1rem';
-errorMessage.innerHTML = `
-<div style="color: #8b5e3c; font-weight: 500; margin-bottom: 0.5rem;">
-Please complete all required fields:
-</div>
-<ul style="margin: 0; padding-left: 1.5rem;">
-${errors.map(err => `<li>${err}</li>`).join('')}
-</ul>
-`;
-container.appendChild(errorMessage);
-errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-
-function getPageErrors(pageNum) {
-const errors = [];
-
-
-if (pageNum === 1) {
-if (!selections.frameworkUnderstanding) {
-errors.push('Please acknowledge your understanding of the framework and approach');
-}
-}
-
-
-if (pageNum === 2) {
-for (let i = 1; i <= 6; i++) {
-if (!quizAnswers[`q${i}`]) {
-errors.push(`Please answer question ${i} in the quiz`);
-break;
-}
-}
-}
-
-
-if (pageNum === 3) {
-for (let i = 7; i <= 12; i++) {
-if (!quizAnswers[`q${i}`]) {
-errors.push(`Please answer question ${i} in the quiz`);
-break;
-}
-}
-}
-
-
-if (pageNum === 4) {
-if (!selections.supportSeeking) {
-errors.push('Please select what you are seeking support for');
-}
-if (selections.supportSeeking === 'other') {
-const otherInput = document.getElementById('support-other-input');
-if (!otherInput || !otherInput.value.trim()) {
-errors.push('Please specify what you are seeking support for');
-}
-}
-
-
-if (!selections.memoriesBefore) {
-errors.push('Please indicate if you have memories from before this');
-} else if (selections.memoriesBefore === 'yes') {
-const memExplanation = document.getElementById('memories-explanation');
-if (!memExplanation || !memExplanation.value.trim()) {
-errors.push('Please explain your memories from before this');
-}
-}
-
-
-if (!selections.trustedPerson) {
-errors.push('Please indicate if you have a trusted person to confide in');
-} else if (selections.trustedPerson === 'yes') {
-const trustedPersonInput = document.getElementById('trusted-person');
-const trustedPersonDesc = document.getElementById('trusted-person-description');
-if (!trustedPersonInput || !trustedPersonInput.value.trim()) {
-errors.push('Please tell me who your trusted person is');
-}
-if (!trustedPersonDesc || !trustedPersonDesc.value.trim()) {
-errors.push('Please describe how your trusted person would describe you');
-}
-}
-
-
-if (!selections.boundaries || (selections.boundaries instanceof Set && selections.boundaries.size === 0)) {
-errors.push('Please select at least one boundary description');
-}
-
-
-const healedVision = document.getElementById('healed-self-vision');
-if (!healedVision || !healedVision.value.trim()) {
-errors.push('Please describe the healed version of yourself and your boundaries');
-}
-
-if (!selections.faultBeliefs) {
-errors.push('Please select what you have been focused on');
-}
-}
-
-
-if (pageNum === 5) {
-if (!selections.privateSpace) {
-errors.push('Please indicate if you agree to private space for sessions');
-}
-if (!selections.willingness) {
-errors.push('Please indicate your willingness to explore patterns');
-}
-if (!selections.readiness) {
-errors.push('Please indicate your readiness level');
-}
-if (!selections.commitment) {
-errors.push('Please select your level of time commitment');
-}
-if (!selections.moneyCommunication) {
-errors.push('Please select how you would like to address money');
-}
-if (!selections.affordabilityPreference) {
-errors.push('Please select your affordability preference');
-}
-}
-
-
-if (pageNum === 6) {
-if (!selections.referred) {
-errors.push('Please indicate if you were referred');
-} else if (selections.referred === 'yes') {
-const refName = document.getElementById('referrer-name');
-if (!refName || !refName.value.trim()) {
-errors.push('Please provide the name of who referred you');
-}
-}
-
-
-const phone = document.getElementById('phone');
-if (!phone || !phone.value.trim()) errors.push('Please enter your phone number');
-
-
-const firstName = document.getElementById('first-name');
-if (!firstName || !firstName.value.trim()) errors.push('Please enter your first name');
-
-
-const lastName = document.getElementById('last-name');
-if (!lastName || !lastName.value.trim()) errors.push('Please enter your last name');
-
-
-const birthdate = document.getElementById('birthdate');
-if (!birthdate || !birthdate.value.trim()) errors.push('Please enter your birthdate');
-
-
-if (!selections.pronouns) {
-errors.push('Please select your preferred pronouns');
-}
-
-
-const zip = document.getElementById('zip-code');
-if (!zip || !zip.value.trim()) errors.push('Please enter your zip code');
-
-
-const email = document.getElementById('email');
-if (!email || !email.value.trim()) errors.push('Please enter your email address');
-}
-
-
-return errors;
-}
-
-
-function validateForm() {
-const errors = [];
-for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-errors.push(...getPageErrors(pageNum));
-}
-return errors;
-}
-
-
-async function handleFormSubmit() {
-const errors = validateForm();
-if (errors.length > 0) {
-showErrors(errors);
-return;
-}
-
-
-if (currentRecordCount >= 999) {
-const limitMessage = document.createElement('div');
-limitMessage.className = 'card';
-limitMessage.style.backgroundColor = '#f0e1cc';
-limitMessage.style.marginTop = '1rem';
-limitMessage.style.textAlign = 'center';
-limitMessage.innerHTML = `
-<div style="color: #8b5e3c; font-weight: 500;">
-Maximum limit of 999 applications reached. Please contact the administrator.
-</div>
-`;
-document.getElementById('form-container').appendChild(limitMessage);
-return;
-}
-
-
-const submitBtn = document.getElementById('submit-btn');
-const originalText = submitBtn.innerHTML;
-submitBtn.disabled = true;
-submitBtn.innerHTML = 'Submitting...';
-
-
-const otherInput = document.getElementById('support-other-input');
-const supportSeekingOther = selections.supportSeeking === 'other' && otherInput ? otherInput.value : '';
-
-
-const quizResult = calculateQuizResult();
-
-
-const applicationData = {
-  id: Date.now().toString(),
-  framework_understanding: selections.frameworkUnderstanding,
-  quiz_result: quizResult,
-  quiz_answers: JSON.stringify(quizAnswers),
-  first_name: document.getElementById('first-name').value,
-  last_name: document.getElementById('last-name').value,
-  email: document.getElementById('email').value,
-  phone: document.getElementById('phone').value,
-  birthdate: document.getElementById('birthdate').value,
-  pronouns: selections.pronouns,
-  zip_code: document.getElementById('zip-code').value,
-  referred: selections.referred,
-  referrer_name: selections.referred === 'yes' ? document.getElementById('referrer-name').value : '',
-  // 🔻 Finance / investment questions
-  commitment_choice: selections.commitment,
-  money_conversation_preference: selections.moneyCommunication,
-  affordability_preference: selections.affordabilityPreference,
-  // 🔻 Support + history
-  support_seeking: selections.supportSeeking,
-  support_seeking_other: supportSeekingOther,
-  memories_before: selections.memoriesBefore,
-  memories_explanation: document.getElementById('memories-explanation').value,
-  trusted_person: document.getElementById('trusted-person').value,
-  trusted_person_description: document.getElementById('trusted-person-description').value,
-  boundaries: Array.from(selections.boundaries).join(', '),
-  healed_self_vision: document.getElementById('healed-self-vision').value,
-  fault_beliefs: selections.faultBeliefs || '',
-  private_space_agreement: selections.privateSpace,
-  willingness_explore: selections.willingness,
-  readiness_level: selections.readiness,
-  submitted_at: new Date().toISOString()
-};
-
-// ----------------------------------------------------
-// Send application data to Google Sheets via Apps Script
-// ----------------------------------------------------
-fetch("https://script.google.com/macros/s/AKfycbxYdhYxcwdabNaJ46LTGvTavR0K6xyTSZCtoBPqGICkBa6kxOfmNo8rSEQS_LCrsppwqg/exec", {
-  method: "POST",
-  mode: "no-cors",
-  headers: {
-    "Content-Type": "text/plain"
-  },
-  body: JSON.stringify(applicationData)
-})
-  .then(() => {
-    // We can't read the response in no-cors mode.
-    console.log("Posted to Google Script (no-cors; response not readable).");
-  })
-  .catch(error => {
-    console.error("Error posting to Google Script:", error);
-  });
-
-function resetForm() {
-document.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], input[type="date"], textarea')
-.forEach(input => { input.value = ''; });
-
-
-for (const key in selections) {
-if (selections[key] instanceof Set) {
-selections[key].clear();
-} else {
-selections[key] = null;
-}
-}
-for (const key in quizAnswers) {
-quizAnswers[key] = null;
-}
-
-
-document.querySelectorAll('.option-row, .inline-radio-option').forEach(row => {
-row.classList.remove('option-selected', 'inline-radio-selected');
-const radio = row.querySelector('.radio');
-if (radio) {
-radio.classList.remove('radio-selected');
-const dot = radio.querySelector('.radio-dot');
-if (dot) dot.style.display = 'none';
-}
-const checkbox = row.querySelector('.checkbox');
-if (checkbox) {
-checkbox.classList.remove('checkbox-selected');
-const mark = checkbox.querySelector('.checkbox-mark');
-if (mark) mark.style.display = 'none';
-}
-});
-
-
-const referrerBlock = document.getElementById('referrer-block');
-const referrerName = document.getElementById('referrer-name');
-if (referrerBlock && referrerName) {
-referrerBlock.style.display = 'none';
-referrerName.required = false;
-referrerName.value = '';
-}
-
-
-const memBlock = document.getElementById('memories-explanation-block');
-const memTextarea = document.getElementById('memories-explanation');
-if (memBlock && memTextarea) {
-memBlock.style.display = 'none';
-memTextarea.required = false;
-memTextarea.value = '';
-}
-
-
-const trustedDetailsBlock = document.getElementById('trusted-person-details-block');
-const trustedPersonInput = document.getElementById('trusted-person');
-const trustedPersonDesc = document.getElementById('trusted-person-description');
-if (trustedDetailsBlock && trustedPersonInput && trustedPersonDesc) {
-trustedDetailsBlock.style.display = 'none';
-trustedPersonInput.required = false;
-trustedPersonDesc.required = false;
-trustedPersonInput.value = '';
-trustedPersonDesc.value = '';
-}
-
-
-document.getElementById('form-pages').style.display = 'block';
-document.getElementById('success-container').style.display = 'none';
-
-
-const existingError = document.getElementById('validation-error-card');
-if (existingError) existingError.remove();
-
-
-goToPage(1);
-updateTopButtons();
-}
-
-
-const dataHandler = {
-onDataChanged(data) {
-currentRecordCount = data.length;
-}
-};
-
-
-async function onConfigChange(config) {
-document.getElementById('form-title').textContent = config.form_title || defaultConfig.form_title;
-
-
-const subtitle = config.form_subtitle || defaultConfig.form_subtitle;
-const subtitleLines = subtitle.split('\n');
-const subtitleEl = document.getElementById('form-subtitle');
-subtitleEl.innerHTML = subtitleLines.map(line => `<span class="subtitle-line">${line}</span>`).join('');
-
-
-document.getElementById('submit-button-text').textContent =
-config.submit_button_text || defaultConfig.submit_button_text;
-
-
-const backgroundColor = config.background_color || defaultConfig.background_color;
-const surfaceColor = config.surface_color || defaultConfig.surface_color;
-const textColor = config.text_color || defaultConfig.text_color;
-const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
-const secondaryActionColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-
-
-document.body.style.backgroundColor = backgroundColor;
-document.querySelector('.app-root').style.backgroundColor = backgroundColor;
-document.querySelectorAll('.card').forEach(el => el.style.backgroundColor = surfaceColor);
-document.querySelectorAll('.title, .question-text, .section-title').forEach(el => el.style.color = textColor);
-document.querySelectorAll('.primary-button').forEach(el => {
-el.style.backgroundColor = primaryActionColor;
-el.style.borderColor = primaryActionColor;
-});
-document.querySelectorAll('.required, .section-title, .question-number').forEach(el => {
-el.style.color = secondaryActionColor;
-});
-}
-
-
-function updateTopButtons() {
-const topPrev = document.getElementById('top-prev');
-const topNext = document.getElementById('top-next');
-
-
-if (topPrev) {
-if (currentPage === 1) topPrev.classList.add('invisible');
-else topPrev.classList.remove('invisible');
-}
-if (topNext) {
-if (currentPage === totalPages) topNext.style.display = 'none';
-else topNext.style.display = 'block';
-}
-}
-
-
-async function init() {
-const topPrev = document.getElementById('top-prev');
-const topNext = document.getElementById('top-next');
-
-
-if (topPrev) {
-topPrev.onclick = function () {
-if (currentPage > 1) {
-goToPage(currentPage - 1);
-updateTopButtons();
-}
-};
-}
-if (topNext) {
-topNext.onclick = function () {
-const pageErrors = getPageErrors(currentPage);
-if (pageErrors.length > 0) {
-showErrors(pageErrors);
-return;
-}
-if (currentPage < totalPages) {
-goToPage(currentPage + 1);
-updateTopButtons();
-}
-};
-}
-
-
-for (let i = 1; i <= totalPages; i++) {
-const nextBtn = document.getElementById(`next-${i}`);
-const prevBtn = document.getElementById(`prev-${i}`);
-if (nextBtn) {
-nextBtn.onclick = (function (page) {
-return function () {
-const pageErrors = getPageErrors(page);
-if (pageErrors.length > 0) {
-showErrors(pageErrors);
-return;
-}
-if (page < totalPages) {
-goToPage(page + 1);
-updateTopButtons();
-}
-};
-})(i);
-}
-if (prevBtn) {
-prevBtn.onclick = (function (page) {
-return function () {
-if (page > 1) {
-goToPage(page - 1);
-updateTopButtons();
-}
-};
-})(i);
-}
-}
-
-
-updateTopButtons();
-
-
-const submitBtn = document.getElementById('submit-btn');
-if (submitBtn) submitBtn.onclick = handleFormSubmit;
-
-
-const resetBtn = document.getElementById('reset-btn');
-if (resetBtn) resetBtn.onclick = resetForm;
-
-
-const viewProfilesBtn = document.getElementById('view-profiles-btn');
-if (viewProfilesBtn) viewProfilesBtn.onclick = showProfilesView;
-
-
-const backToFormBtn = document.getElementById('back-to-form-btn');
-if (backToFormBtn) backToFormBtn.onclick = hideProfilesView;
-
-
-if (window.elementSdk) {
-await window.elementSdk.init({
-defaultConfig,
-onConfigChange,
-mapToCapabilities: (config) => ({
-recolorables: [
-{
-get: () => config.background_color || defaultConfig.background_color,
-set: (value) => {
-window.elementSdk.config.background_color = value;
-window.elementSdk.setConfig({ background_color: value });
-}
-},
-{
-get: () => config.surface_color || defaultConfig.surface_color,
-set: (value) => {
-window.elementSdk.config.surface_color = value;
-window.elementSdk.setConfig({ surface_color: value });
-}
-},
-{
-get: () => config.text_color || defaultConfig.text_color,
-set: (value) => {
-window.elementSdk.config.text_color = value;
-window.elementSdk.setConfig({ text_color: value });
-}
-},
-{
-get: () => config.primary_action_color || defaultConfig.primary_action_color,
-set: (value) => {
-window.elementSdk.config.primary_action_color = value;
-window.elementSdk.setConfig({ primary_action_color: value });
-}
-},
-{
-get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-set: (value) => {
-window.elementSdk.config.secondary_action_color = value;
-window.elementSdk.setConfig({ secondary_action_color: value });
-}
-}
-],
-borderables: [],
-fontEditable: undefined,
-fontSizeable: undefined
-}),
-mapToEditPanelValues: (config) => new Map([
-["form_title", config.form_title || defaultConfig.form_title],
-["form_subtitle", config.form_subtitle || defaultConfig.form_subtitle],
-["submit_button_text", config.submit_button_text || defaultConfig.submit_button_text]
-])
-});
-}
-
-
-if (window.dataSdk) {
-const initResult = await window.dataSdk.init(dataHandler);
-if (!initResult.isOk) {
-console.error("Failed to initialize data SDK");
-}
-}
-
-
-renderRadioOptions('support-seeking-options', formData.supportSeeking, 'supportSeeking');
-renderInlineRadioOptions('memories-before-options', formData.memoriesBefore, 'memoriesBefore');
-renderCheckboxOptions('boundaries-options', formData.boundaries, 'boundaries');
-renderRadioOptions('fault-beliefs-options', formData.faultBeliefs, 'faultBeliefs');
-renderInlineRadioOptions('private-space-options', formData.privateSpace, 'privateSpace');
-renderRadioOptions('willingness-options', formData.willingness, 'willingness');
-renderRadioOptions('readiness-options', formData.readiness, 'readiness');
-renderRadioOptions('commitment-options', formData.commitment, 'commitment');
-renderRadioOptions('money-communication-options', formData.moneyCommunication, 'moneyCommunication');
-renderRadioOptions('affordability-options', formData.affordabilityPreference, 'affordabilityPreference');
-renderInlineRadioOptions('referred-options', formData.referred, 'referred');
-renderInlineRadioOptions('trusted-person-options', formData.trustedPerson, 'trustedPerson');
-renderRadioOptions('pronouns-options', formData.pronouns, 'pronouns');
-renderRadioOptions('framework-understanding-options', formData.frameworkUnderstanding, 'frameworkUnderstanding');
-
-
-quizQuestions.forEach((q, index) => {
-renderQuizQuestion(`quiz-q${index + 1}`, q);
-});
-}
-
-
-if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', init);
-} else {
-init();
-}
+  // ---------- CONFIG ----------
+  const defaultConfig = {
+    form_title: "Hypnotherapy Application",
+    form_subtitle:
+      "Let's make sure we are aligned.\nIf for any reason we aren't able to work together, I can refer you to other great hypnotherapists.",
+    submit_button_text: "Submit Application",
+    background_color: "#f7efe6",
+    surface_color: "#ffffff",
+    text_color: "#111827",
+    primary_action_color: "#000000",
+    secondary_action_color: "#8b5e3c",
+  };
+
+  let currentRecordCount = 0;
+  let currentPage = 1;
+  const totalPages = 6;
+
+  // ---------- STATE ----------
+  const selections = {
+    frameworkUnderstanding: null,
+    supportSeeking: null,
+    memoriesBefore: null,
+    boundaries: new Set(),
+    faultBeliefs: null,
+    privateSpace: null,
+    willingness: null,
+    readiness: null,
+    commitment: null,
+    moneyCommunication: null,
+    affordabilityPreference: null,
+    referred: null,
+    pronouns: null,
+    trustedPerson: null,
+  };
+
+  const quizAnswers = {
+    q1: null,
+    q2: null,
+    q3: null,
+    q4: null,
+    q5: null,
+    q6: null,
+    q7: null,
+    q8: null,
+    q9: null,
+    q10: null,
+    q11: null,
+    q12: null,
+  };
+
+  // ---------- QUIZ DEFINITIONS ----------
+  const quizQuestions = [
+    {
+      id: "q1",
+      text: "When something goes wrong",
+      options: [
+        {
+          value: "being",
+          label: "I think about it a lot and wonder what it means about me.",
+        },
+        {
+          value: "flowing",
+          label: "I hurry to fix it or make everyone feel better.",
+        },
+        {
+          value: "trusting",
+          label: "I plan what to do next so it won't happen again.",
+        },
+      ],
+    },
+    {
+      id: "q2",
+      text: "When someone is upset with me",
+      options: [
+        {
+          value: "trusting",
+          label: "I explain what I meant and take charge to fix it.",
+        },
+        {
+          value: "being",
+          label: "I go over what I said and worry how it sounded.",
+        },
+        {
+          value: "flowing",
+          label: "I say sorry fast and try to make peace.",
+        },
+      ],
+    },
+    {
+      id: "q3",
+      text: "When I feel nervous or off balance",
+      options: [
+        {
+          value: "flowing",
+          label: "I stay busy helping others.",
+        },
+        {
+          value: "trusting",
+          label: "I clean up or plan to feel in control again.",
+        },
+        {
+          value: "being",
+          label: "I think about every reason I might feel this way.",
+        },
+      ],
+    },
+    {
+      id: "q4",
+      text: "When I make a mistake",
+      options: [
+        {
+          value: "being",
+          label: "I feel bad and think hard about why it happened.",
+        },
+        {
+          value: "flowing",
+          label: "I try even harder to make up for it.",
+        },
+        {
+          value: "trusting",
+          label: 'I set new rules so it won\'t happen again.',
+        },
+      ],
+    },
+    {
+      id: "q5",
+      text: "When someone lets me down",
+      options: [
+        {
+          value: "trusting",
+          label: "I make new rules or step back to stay safe.",
+        },
+        {
+          value: "being",
+          label: "I wonder why they did that.",
+        },
+        {
+          value: "flowing",
+          label: "I forgive them and do the extra work myself.",
+        },
+      ],
+    },
+    {
+      id: "q6",
+      text: "When life slows down",
+      options: [
+        {
+          value: "flowing",
+          label: "I look for someone or something that still needs me.",
+        },
+        {
+          value: "trusting",
+          label: "I get restless and find something to do.",
+        },
+        {
+          value: "being",
+          label: "I start thinking deeply and lose track of time.",
+        },
+      ],
+    },
+    {
+      id: "q7",
+      text: "When people don't understand me",
+      options: [
+        {
+          value: "being",
+          label: "I wonder what I did wrong.",
+        },
+        {
+          value: "flowing",
+          label: "I explain myself again and again to make peace.",
+        },
+        {
+          value: "trusting",
+          label: "I set things straight so it won't happen next time.",
+        },
+      ],
+    },
+    {
+      id: "q8",
+      text: "When there is conflict",
+      options: [
+        {
+          value: "trusting",
+          label: "I set clear limits to stop the fight.",
+        },
+        {
+          value: "being",
+          label: "I try to understand everyone's side first.",
+        },
+        {
+          value: "flowing",
+          label: "I make peace, even if it costs me.",
+        },
+      ],
+    },
+    {
+      id: "q9",
+      text: "When I succeed at something",
+      options: [
+        {
+          value: "flowing",
+          label: "I think about how to use it to help others.",
+        },
+        {
+          value: "trusting",
+          label: "I make a new goal to keep going.",
+        },
+        {
+          value: "being",
+          label: "I ask myself what this says about me.",
+        },
+      ],
+    },
+    {
+      id: "q10",
+      text: "When change is coming",
+      options: [
+        {
+          value: "being",
+          label: "I look for the lesson in it.",
+        },
+        {
+          value: "flowing",
+          label: "I go along and help others feel okay.",
+        },
+        {
+          value: "trusting",
+          label: "I plan ahead for what might happen.",
+        },
+      ],
+    },
+    {
+      id: "q11",
+      text: "My thoughts when I'm stressed",
+      options: [
+        {
+          value: "trusting",
+          label: '"I need to take control right now."',
+        },
+        {
+          value: "being",
+          label: '"Why am I like this? I should know better."',
+        },
+        {
+          value: "flowing",
+          label: '"I can fix this if I keep trying."',
+        },
+      ],
+    },
+    {
+      id: "q12",
+      text: "Deep down, when things are hard",
+      options: [
+        {
+          value: "flowing",
+          label: "I feel worried until everyone else is okay.",
+        },
+        {
+          value: "trusting",
+          label: "I feel tight and under pressure to hold things together.",
+        },
+        {
+          value: "being",
+          label: "I feel sad or ashamed I can't fix it.",
+        },
+      ],
+    },
+  ];
+
+  // ---------- FORM OPTION DEFINITIONS ----------
+  const formData = {
+    frameworkUnderstanding: [
+      { value: "comfortable", label: "Yes, I am comfortable with this approach" },
+      { value: "open", label: "I'm open to exploring this perspective" },
+      { value: "unsure", label: "I'm unsure but willing to learn more" },
+    ],
+    supportSeeking: [
+      { value: "damaging-experiences", label: "Damaging past experiences" },
+      { value: "recovering-religion", label: "Recovering from religion" },
+      { value: "other", label: "Other", hasInput: true },
+    ],
+    memoriesBefore: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+    boundaries: [
+      { value: "non-existent", label: "Non-existent" },
+      { value: "weak", label: "Weak" },
+      { value: "strong", label: "Strong" },
+      { value: "healthy", label: "Healthy" },
+      { value: "unhealthy", label: "Unhealthy" },
+    ],
+    faultBeliefs: [
+      { value: "my-fault", label: "...the cause of my pain." },
+      {
+        value: "someone-else-fault",
+        label: "...what I can do to heal myself.",
+      },
+    ],
+    privateSpace: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+    willingness: [
+      {
+        value: "willing",
+        label: "I'm willing — even if it's uncomfortable.",
+      },
+      {
+        value: "unsure",
+        label: "I'm unsure, but I want to try.",
+      },
+      {
+        value: "stay-comfortable",
+        label: "I prefer to stay comfortable right now.",
+      },
+    ],
+    readiness: [
+      { value: "small-time", label: "Up to 45 minutes a week." },
+      { value: "steady-weekly", label: "Up to 90 minutes a week." },
+      { value: "fully-ready", label: "Up to 2.5 hours a week." },
+    ],
+    commitment: [
+      {
+        value: "commit-12-weeks",
+        label: "I am ready to commit 12-weeks to my transformation.",
+      },
+      {
+        value: "commit-6-weeks",
+        label: "I am ready to commit 6-weeks to my transformation.",
+      },
+      {
+        value: "not-yet",
+        label: "Not yet, but I’d like to plan this for another time.",
+      },
+    ],
+    moneyCommunication: [
+      { value: "video", label: "Face-to-face virtually." },
+      { value: "phone", label: "Voice call on the phone." },
+      { value: "email", label: "Reading via email." },
+    ],
+    affordabilityPreference: [
+      { value: "full-price", label: "I would like to pay full price." },
+      {
+        value: "income-docs",
+        label: "I would like to submit my income documents for pricing consideration.",
+      },
+    ],
+    referred: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+    pronouns: [
+      { value: "she-her", label: "She/Her" },
+      { value: "he-him", label: "He/Him" },
+      { value: "they", label: "They" },
+    ],
+    trustedPerson: [
+      { value: "yes", label: "Yes" },
+      { value: "no", label: "No" },
+    ],
+  };
+
+  // ---------- QUIZ RESULT PROFILES ----------
+  const quizResultProfiles = {
+    "Being > Flowing": {
+      title: "🔥 Your Flight Direction is toward Being and Flowing",
+      coreMovement:
+        "Your flight direction is toward Being and Flowing. You grow by settling into who you are and letting that truth move into your life with ease. When your presence is honest and unforced, expression becomes lighter and more natural.",
+      practices:
+        "• Lean into choices that feel authentic in the moment.\n• Invite simple expressions of your truth without overthinking.\n• Choose small areas of your life to move with more ease.\n• Let your presence be enough before you try to \"do\" anything.",
+      posture: "A steady, relaxed openness that allows clarity and ease to work together.",
+      mantra: "“My truth moves naturally when I let myself be.”",
+    },
+    "Being > Trusting": {
+      title: "🔥 Your Flight Direction is toward Being & Trusting",
+      coreMovement:
+        "Your flight direction is toward Being and Trusting. You strengthen your clarity first and then let trust take shape from that clarity. Support becomes easier to receive when you're rooted in who you are.",
+      practices:
+        "• Lean into moments that confirm your sense of self.\n• Invite small experiences of safe connection.\n• Choose trust at a pace that feels grounded and real.\n• Let yourself rely on others one step at a time.",
+      posture: "Grounded openness that doesn't rush or force itself.",
+      mantra: "“Trust grows naturally when I stand in my truth.”",
+    },
+    "Trusting > Being": {
+      title: "🔥 Your Flight Direction is toward Trusting & Being",
+      coreMovement:
+        "Your flight direction is toward Trusting and Being. You open yourself to experience, and that openness helps you understand who you're becoming. Your identity grows from the moments you allow in.",
+      practices:
+        "• Lean into curiosity about what feels true for you.\n• Invite new experiences without pressure to commit.\n• Choose reflection after exploration, not before it.\n• Let identity form from honest lived moments.",
+      posture: "Gentle courage that welcomes new information about yourself.",
+      mantra: "“I discover myself through what I let in.”",
+    },
+    "Trusting > Flowing": {
+      title: "🔥 Your Flight Direction is toward Trusting & Flowing",
+      coreMovement:
+        "Your flight direction is toward Trusting and Flowing. When you let yourself trust the moment, your energy softens and moves more freely. Ease shows up when you stop bracing and follow what feels aligned.",
+      practices:
+        "• Lean into your instinct when something feels right.\n• Invite small moments of ease throughout your day.\n• Choose expression without worrying about perfection.\n• Let trust support the pace of your movement.",
+      posture: "Soft confidence that lets rhythm develop naturally.",
+      mantra: "“Ease finds me when I trust the moment I'm in.”",
+    },
+    "Flowing > Being": {
+      title: "🔥 Your Flight Direction is toward Flowing & Being",
+      coreMovement:
+        "Your flight direction is toward Flowing and Being. You sense your way forward and then let that rhythm help you understand yourself more clearly. Your identity settles naturally when you listen to what feels true.",
+      practices:
+        "• Lean into the movements and choices that feel alive for you.\n• Invite stillness afterward to understand their meaning.\n• Choose identity from experience, not expectation.\n• Let your rhythm guide what becomes real for you.",
+      posture: "Attuned presence that listens inwardly.",
+      mantra: "“My rhythm reveals who I am.”",
+    },
+    "Flowing > Trusting": {
+      title: "🔥 Your Flight Direction is toward Flowing & Trusting",
+      coreMovement:
+        "Your flight direction is toward Flowing and Trusting. You follow the rhythm of your own movement, and trust grows once something feels aligned in your body. You open up at the pace that fits your aspirational rhythm.",
+      practices:
+        "• Lean into embodied decisions that feel steady.\n• Invite support after you feel the internal yes.\n• Choose connection that respects your natural pace.\n• Let trust emerge from your felt sense, not pressure.",
+      posture: "Intuitive openness guided by bodily alignment.",
+      mantra: "“I trust what aligns with my rhythm.”",
+    },
+    "Being = Flowing": {
+      title: "🔥 Your Flight Direction is toward Being & Flowing",
+      coreMovement:
+        "Your flight direction balances Being and Flowing. You move from authenticity and anchor your expression in truth. Identity and rhythm harmonize — you don't separate who you are from how you move through the world.",
+      practices:
+        "• Lean into movements that feel alive and honest.\n• Invite stillness when meaning wants to settle.\n• Choose expression that reflects inner clarity.\n• Let your rhythm confirm your reality.",
+      posture: "Embodied authenticity — fluid and true.",
+      mantra: "“My movement and my truth are one.”",
+    },
+    "Being = Trusting": {
+      title: "🔥 Your Flight Direction is toward Being & Trusting",
+      coreMovement:
+        "Your flight direction balances Trusting and Being. You meet the world with an open heart while staying rooted in yourself. Openness does not cost identity — identity does not close you. You receive and remain, equally.",
+      practices:
+        "• Lean into connection without needing to merge.\n• Invite moments of reflection without retreating.\n• Choose relationships that honor your truth and your tenderness.\n• Let trust be steady and selfhood be soft.",
+      posture: "Open presence, grounded and clear.",
+      mantra: "“I stay myself as I let life in.”",
+    },
+    "Trusting = Being": {
+      title: "🔥 Your Flight Direction is toward Being & Trusting",
+      coreMovement:
+        "Your flight direction balances Trusting and Being. You meet the world with an open heart while staying rooted in yourself. Openness does not cost identity — identity does not close you. You receive and remain, equally.",
+      practices:
+        "• Lean into connection without needing to merge.\n• Invite moments of reflection without retreating.\n• Choose relationships that honor your truth and your tenderness.\n• Let trust be steady and selfhood be soft.",
+      posture: "Open presence, grounded and clear.",
+      mantra: "“I stay myself as I let life in.”",
+    },
+    "Trusting = Flowing": {
+      title: "🔥 Your Flight Direction is toward Flowing & Trusting",
+      coreMovement:
+        "Your flight direction balances Flowing and Trusting. Ease and openness rise together — you soften into connection without forcing closeness or speed. You move with the moment and let trust travel beside you.",
+      practices:
+        "• Lean into gentle momentum rather than urgency.\n• Invite connection at the pace your body enjoys.\n• Choose expression that feels safe and alive.\n• Let trust breathe with your rhythm.",
+      posture: "Soft fluidity anchored in receptivity.",
+      mantra: "“Trust moves with me, not ahead of me.”",
+    },
+    "Flowing = Being": {
+      title: "🔥 Your Flight Direction is toward Flowing & Being",
+      coreMovement:
+        "Your flight direction balances Flowing and Being. You move from authenticity and anchor your expression in truth. Identity and rhythm harmonize — you don't separate who you are from how you move through the world.",
+      practices:
+        "• Lean into movements that feel alive and honest.\n• Invite stillness when meaning wants to settle.\n• Choose expression that reflects inner clarity.\n• Let your rhythm confirm your reality.",
+      posture: "Embodied authenticity — fluid and true.",
+      mantra: "“My movement and my truth are one.”",
+    },
+    "Flowing = Trusting": {
+      title: "🔥 Your Flight Direction is toward Flowing & Trusting",
+      coreMovement:
+        "Your flight direction balances Flowing and Trusting. Ease and openness rise together — you soften into connection without forcing closeness or speed. You move with the moment and let trust travel beside you.",
+      practices:
+        "• Lean into gentle momentum rather than urgency.\n• Invite connection at the pace your body enjoys.\n• Choose expression that feels safe and alive.\n• Let trust breathe with your rhythm.",
+      posture: "Soft fluidity anchored in receptivity.",
+      mantra: "“Trust moves with me, not ahead of me.”",
+    },
+    "Being = Flowing = Trusting": {
+      title: "🔥 Your Flight Direction is toward Being & Flowing & Trusting",
+      coreMovement:
+        "Your flight direction holds Being, Flowing, and Trusting as equals. You stand as yourself, move as yourself, and open as yourself — not in sequence, but together. Identity, rhythm, and receptivity form one living field.",
+      practices:
+        "• Lean into choices that feel true, alive, and safe.\n• Invite movement without losing presence.\n• Choose trust without abandoning clarity.\n• Let your whole self participate in every moment.",
+      posture: "Unified coherence — whole, moving, open.",
+      mantra: "“I am steady, I am flowing, I am receiving — as one.”",
+    },
+  };
+
+  // ---------- PAGE / NAV ----------
+  function goToPage(pageNum) {
+    const existingError = document.getElementById("validation-error-card");
+    if (existingError) existingError.remove();
+
+    for (let i = 1; i <= totalPages; i++) {
+      const page = document.getElementById(`page-${i}`);
+      if (page) page.classList.remove("active");
+    }
+
+    const targetPage = document.getElementById(`page-${pageNum}`);
+    if (targetPage) {
+      targetPage.classList.add("active");
+      currentPage = pageNum;
+      const progress = document.getElementById("progress-indicator");
+      if (progress) progress.textContent = `Page ${pageNum} of ${totalPages}`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  // ---------- PROFILES VIEW ----------
+  function showProfilesView() {
+    document.getElementById("form-container").style.display = "none";
+    document.getElementById("profiles-view").style.display = "block";
+    renderAllProfiles();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function hideProfilesView() {
+    document.getElementById("profiles-view").style.display = "none";
+    document.getElementById("form-container").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderAllProfiles() {
+    const container = document.getElementById("all-profiles-container");
+    if (!container) return;
+    let html = "";
+    for (const [, profile] of Object.entries(quizResultProfiles)) {
+      html += `
+        <div class="profile-section">
+          <div style="text-align: center; font-size: 1.5rem; margin-bottom: 1.5rem; color: #8b5e3c;">${profile.title}</div>
+          <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">🌬 Core Movement</div>
+            <div style="line-height: 1.7; color: #3f3f46;">${profile.coreMovement}</div>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">️ Aligned Practices</div>
+            <div style="line-height: 1.7; color: #3f3f46;">
+              ${profile.practices
+                .split("\n")
+                .map((line) => `<div style="margin-bottom: 0.35rem;">${line}</div>`)
+                .join("")}
+            </div>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">💛 Aspirational Posture</div>
+            <div style="line-height: 1.7; color: #3f3f46;">${profile.posture}</div>
+          </div>
+          <div>
+            <div style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: #8b5e3c;">🔥 Momentum Mantra</div>
+            <div style="line-height: 1.7; color: #3f3f46; font-style: italic;">${profile.mantra}</div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  // ---------- RENDER HELPERS ----------
+  function renderQuizQuestion(containerId, question) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = question.options
+      .map(
+        (opt) => `
+      <div class="option-row" data-question="${question.id}" data-value="${opt.value}">
+        <div class="radio"><div class="radio-dot"></div></div>
+        <span class="option-text">${opt.label}</span>
+      </div>
+    `
+      )
+      .join("");
+    container.querySelectorAll(".option-row").forEach((row) => {
+      row.addEventListener("click", (e) => handleQuizClick(e, question.id));
+    });
+  }
+
+  function handleQuizClick(e, questionId) {
+    const row = e.target.closest(".option-row");
+    if (!row) return;
+    const value = row.dataset.value;
+    const container = row.parentElement;
+    container.querySelectorAll(".option-row").forEach((r) => {
+      r.classList.remove("option-selected");
+      const radio = r.querySelector(".radio");
+      if (radio) {
+        radio.classList.remove("radio-selected");
+        const dot = radio.querySelector(".radio-dot");
+        if (dot) dot.style.display = "none";
+      }
+    });
+    row.classList.add("option-selected");
+    const radio = row.querySelector(".radio");
+    if (radio) {
+      radio.classList.add("radio-selected");
+      const dot = radio.querySelector(".radio-dot");
+      if (dot) dot.style.display = "block";
+    }
+    quizAnswers[questionId] = value;
+  }
+
+  function calculateQuizResult() {
+    const scores = { being: 0, flowing: 0, trusting: 0 };
+    for (const key in quizAnswers) {
+      if (quizAnswers[key]) {
+        scores[quizAnswers[key]]++;
+      }
+    }
+    const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+    const [firstType, firstScore] = entries[0];
+    const [secondType, secondScore] = entries[1];
+    const [thirdType, thirdScore] = entries[2];
+    const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    if (firstScore === secondScore && secondScore === thirdScore) {
+      return "Being = Flowing = Trusting";
+    }
+    if (firstScore === secondScore && firstScore > thirdScore) {
+      const pair = [firstType, secondType].sort();
+      return `${cap(pair[0])} = ${cap(pair[1])}`;
+    }
+    return `${cap(firstType)} > ${cap(secondType)}`;
+  }
+
+  function displayQuizResult(resultKey) {
+    const profile = quizResultProfiles[resultKey];
+    if (profile) {
+      document.getElementById("result-title").textContent = profile.title;
+      document.getElementById("result-core-movement").textContent =
+        profile.coreMovement;
+      const practicesEl = document.getElementById("result-practices");
+      practicesEl.innerHTML = profile.practices
+        .split("\n")
+        .map((line) => `<div style="margin-bottom: 0.5rem;">${line}</div>`)
+        .join("");
+      document.getElementById("result-posture").textContent = profile.posture;
+      document.getElementById("result-mantra").textContent = profile.mantra;
+    } else {
+      document.getElementById("quiz-result-card").style.display = "none";
+    }
+  }
+
+  function showSuccess(quizResult) {
+    document.getElementById("form-pages").style.display = "none";
+    document.getElementById("success-container").style.display = "block";
+    displayQuizResult(quizResult);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderRadioOptions(containerId, options, selectionKey) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = options
+      .map(
+        (opt) => `
+      <div class="option-row" data-type="${selectionKey}" data-value="${opt.value}">
+        <div class="radio"><div class="radio-dot"></div></div>
+        <span class="option-text">${opt.label}</span>
+        ${
+          opt.hasInput
+            ? '<input type="text" class="form-input-inline" id="support-other-input" placeholder="Please specify..." style="display: none;" />'
+            : ""
+        }
+      </div>
+    `
+      )
+      .join("");
+    container.querySelectorAll(".option-row").forEach((row) => {
+      row.addEventListener("click", (e) => handleRadioClick(e, selectionKey));
+    });
+  }
+
+  function renderInlineRadioOptions(containerId, options, selectionKey) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = options
+      .map(
+        (opt) => `
+      <div class="inline-radio-option" data-type="${selectionKey}" data-value="${opt.value}">
+        <div class="radio"><div class="radio-dot"></div></div>
+        <span class="option-text">${opt.label}</span>
+      </div>
+    `
+      )
+      .join("");
+    container.querySelectorAll(".inline-radio-option").forEach((row) => {
+      row.addEventListener("click", (e) =>
+        handleInlineRadioClick(e, selectionKey)
+      );
+    });
+  }
+
+  function renderCheckboxOptions(containerId, options, selectionKey) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = options
+      .map(
+        (opt) => `
+      <div class="option-row" data-type="${selectionKey}" data-value="${opt.value}">
+        <div class="checkbox"><span class="checkbox-mark">✓</span></div>
+        <span class="option-text">${opt.label}</span>
+      </div>
+    `
+      )
+      .join("");
+    container.querySelectorAll(".option-row").forEach((row) => {
+      row.addEventListener("click", (e) => handleCheckboxClick(e, selectionKey));
+    });
+  }
+
+  function handleRadioClick(e, selectionKey) {
+    const row = e.target.closest(".option-row");
+    if (!row) return;
+    const value = row.dataset.value;
+    const container = row.parentElement;
+    container.querySelectorAll(".option-row").forEach((r) => {
+      r.classList.remove("option-selected");
+      const radio = r.querySelector(".radio");
+      if (radio) {
+        radio.classList.remove("radio-selected");
+        const dot = radio.querySelector(".radio-dot");
+        if (dot) dot.style.display = "none";
+      }
+      const input = r.querySelector(".form-input-inline");
+      if (input) input.style.display = "none";
+    });
+    row.classList.add("option-selected");
+    const radio = row.querySelector(".radio");
+    if (radio) {
+      radio.classList.add("radio-selected");
+      const dot = radio.querySelector(".radio-dot");
+      if (dot) dot.style.display = "block";
+    }
+    selections[selectionKey] = value;
+
+    if (value === "other") {
+      const otherInput = document.getElementById("support-other-input");
+      if (otherInput) otherInput.style.display = "block";
+    }
+
+    if (selectionKey === "referred") {
+      const referrerBlock = document.getElementById("referrer-block");
+      const referrerInput = document.getElementById("referrer-name");
+      if (value === "yes") {
+        referrerBlock.style.display = "block";
+        referrerInput.required = true;
+      } else {
+        referrerBlock.style.display = "none";
+        referrerInput.required = false;
+        referrerInput.value = "";
+      }
+    }
+  }
+
+  function handleInlineRadioClick(e, selectionKey) {
+    const row = e.target.closest(".inline-radio-option");
+    if (!row) return;
+    const value = row.dataset.value;
+    const container = row.parentElement;
+    container.querySelectorAll(".inline-radio-option").forEach((r) => {
+      r.classList.remove("inline-radio-selected");
+      const radio = r.querySelector(".radio");
+      if (radio) {
+        radio.classList.remove("radio-selected");
+        const dot = radio.querySelector(".radio-dot");
+        if (dot) dot.style.display = "none";
+      }
+    });
+    row.classList.add("inline-radio-selected");
+    const radio = row.querySelector(".radio");
+    if (radio) {
+      radio.classList.add("radio-selected");
+      const dot = radio.querySelector(".radio-dot");
+      if (dot) dot.style.display = "block";
+    }
+    selections[selectionKey] = value;
+
+    if (selectionKey === "referred") {
+      const referrerBlock = document.getElementById("referrer-block");
+      const referrerInput = document.getElementById("referrer-name");
+      if (value === "yes") {
+        referrerBlock.style.display = "block";
+        referrerInput.required = true;
+      } else {
+        referrerBlock.style.display = "none";
+        referrerInput.required = false;
+        referrerInput.value = "";
+      }
+    }
+
+    if (selectionKey === "memoriesBefore") {
+      const memBlock = document.getElementById("memories-explanation-block");
+      const memTextarea = document.getElementById("memories-explanation");
+      if (value === "yes") {
+        memBlock.style.display = "block";
+        memTextarea.required = true;
+      } else {
+        memBlock.style.display = "none";
+        memTextarea.required = false;
+        memTextarea.value = "";
+      }
+    }
+
+    if (selectionKey === "trustedPerson") {
+      const detailsBlock = document.getElementById(
+        "trusted-person-details-block"
+      );
+      const personInput = document.getElementById("trusted-person");
+      const descInput = document.getElementById("trusted-person-description");
+      if (value === "yes") {
+        detailsBlock.style.display = "block";
+        personInput.required = true;
+        descInput.required = true;
+      } else {
+        detailsBlock.style.display = "none";
+        personInput.required = false;
+        descInput.required = false;
+        personInput.value = "";
+        descInput.value = "";
+      }
+    }
+  }
+
+  function handleCheckboxClick(e, selectionKey) {
+    const row = e.target.closest(".option-row");
+    if (!row) return;
+    const value = row.dataset.value;
+    const checkbox = row.querySelector(".checkbox");
+    const checkMark = row.querySelector(".checkbox-mark");
+    if (selections[selectionKey].has(value)) {
+      selections[selectionKey].delete(value);
+      row.classList.remove("option-selected");
+      checkbox.classList.remove("checkbox-selected");
+      checkMark.style.display = "none";
+    } else {
+      selections[selectionKey].add(value);
+      row.classList.add("option-selected");
+      checkbox.classList.add("checkbox-selected");
+      checkMark.style.display = "block";
+    }
+  }
+
+  // ---------- VALIDATION ----------
+  function showErrors(errors) {
+    const container = document.getElementById("form-container");
+    if (!container) return;
+    const existing = document.getElementById("validation-error-card");
+    if (existing) existing.remove();
+    const errorMessage = document.createElement("div");
+    errorMessage.id = "validation-error-card";
+    errorMessage.className = "card";
+    errorMessage.style.backgroundColor = "#f0e1cc";
+    errorMessage.style.marginTop = "1rem";
+    errorMessage.innerHTML = `
+      <div style="color: #8b5e3c; font-weight: 500; margin-bottom: 0.5rem;">
+        Please complete all required fields:
+      </div>
+      <ul style="margin: 0; padding-left: 1.5rem;">
+        ${errors.map((err) => `<li>${err}</li>`).join("")}
+      </ul>
+    `;
+    container.appendChild(errorMessage);
+    errorMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function getPageErrors(pageNum) {
+    const errors = [];
+    if (pageNum === 1) {
+      if (!selections.frameworkUnderstanding) {
+        errors.push(
+          "Please acknowledge your understanding of the framework and approach"
+        );
+      }
+    }
+    if (pageNum === 2) {
+      for (let i = 1; i <= 6; i++) {
+        if (!quizAnswers[`q${i}`]) {
+          errors.push(`Please answer question ${i} in the quiz`);
+          break;
+        }
+      }
+    }
+    if (pageNum === 3) {
+      for (let i = 7; i <= 12; i++) {
+        if (!quizAnswers[`q${i}`]) {
+          errors.push(`Please answer question ${i} in the quiz`);
+          break;
+        }
+      }
+    }
+    if (pageNum === 4) {
+      if (!selections.supportSeeking) {
+        errors.push("Please select what you are seeking support for");
+      }
+      if (selections.supportSeeking === "other") {
+        const otherInput = document.getElementById("support-other-input");
+        if (!otherInput || !otherInput.value.trim()) {
+          errors.push("Please specify what you are seeking support for");
+        }
+      }
+      if (!selections.memoriesBefore) {
+        errors.push("Please indicate if you have memories from before this");
+      } else if (selections.memoriesBefore === "yes") {
+        const memExplanation = document.getElementById("memories-explanation");
+        if (!memExplanation || !memExplanation.value.trim()) {
+          errors.push("Please explain your memories from before this");
+        }
+      }
+      if (!selections.trustedPerson) {
+        errors.push(
+          "Please indicate if you have a trusted person to confide in"
+        );
+      } else if (selections.trustedPerson === "yes") {
+        const trustedPersonInput =
+          document.getElementById("trusted-person");
+        const trustedPersonDesc = document.getElementById(
+          "trusted-person-description"
+        );
+        if (!trustedPersonInput || !trustedPersonInput.value.trim()) {
+          errors.push("Please tell me who your trusted person is");
+        }
+        if (!trustedPersonDesc || !trustedPersonDesc.value.trim()) {
+          errors.push(
+            "Please describe how your trusted person would describe you"
+          );
+        }
+      }
+      if (
+        !selections.boundaries ||
+        (selections.boundaries instanceof Set &&
+          selections.boundaries.size === 0)
+      ) {
+        errors.push("Please select at least one boundary description");
+      }
+      const healedVision = document.getElementById("healed-self-vision");
+      if (!healedVision || !healedVision.value.trim()) {
+        errors.push(
+          "Please describe the healed version of yourself and your boundaries"
+        );
+      }
+      if (!selections.faultBeliefs) {
+        errors.push("Please select what you have been focused on");
+      }
+    }
+    if (pageNum === 5) {
+      if (!selections.privateSpace) {
+        errors.push("Please indicate if you agree to private space for sessions");
+      }
+      if (!selections.willingness) {
+        errors.push("Please indicate your willingness to explore patterns");
+      }
+      if (!selections.readiness) {
+        errors.push("Please indicate your readiness level");
+      }
+      if (!selections.commitment) {
+        errors.push("Please select your level of time commitment");
+      }
+      if (!selections.moneyCommunication) {
+        errors.push("Please select how you would like to address money");
+      }
+      if (!selections.affordabilityPreference) {
+        errors.push("Please select your affordability preference");
+      }
+    }
+    if (pageNum === 6) {
+      if (!selections.referred) {
+        errors.push("Please indicate if you were referred");
+      } else if (selections.referred === "yes") {
+        const refName = document.getElementById("referrer-name");
+        if (!refName || !refName.value.trim()) {
+          errors.push("Please provide the name of who referred you");
+        }
+      }
+      const phone = document.getElementById("phone");
+      if (!phone || !phone.value.trim())
+        errors.push("Please enter your phone number");
+      const firstName = document.getElementById("first-name");
+      if (!firstName || !firstName.value.trim())
+        errors.push("Please enter your first name");
+      const lastName = document.getElementById("last-name");
+      if (!lastName || !lastName.value.trim())
+        errors.push("Please enter your last name");
+      const birthdate = document.getElementById("birthdate");
+      if (!birthdate || !birthdate.value.trim())
+        errors.push("Please enter your birthdate");
+      if (!selections.pronouns) {
+        errors.push("Please select your preferred pronouns");
+      }
+      const zip = document.getElementById("zip-code");
+      if (!zip || !zip.value.trim()) errors.push("Please enter your zip code");
+      const email = document.getElementById("email");
+      if (!email || !email.value.trim())
+        errors.push("Please enter your email address");
+    }
+    return errors;
+  }
+
+  function validateForm() {
+    const errors = [];
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      errors.push(...getPageErrors(pageNum));
+    }
+    return errors;
+  }
+
+  // ---------- SUBMIT ----------
+  async function handleFormSubmit() {
+    const errors = validateForm();
+    if (errors.length > 0) {
+      showErrors(errors);
+      return;
+    }
+
+    if (currentRecordCount >= 999) {
+      const limitMessage = document.createElement("div");
+      limitMessage.className = "card";
+      limitMessage.style.backgroundColor = "#f0e1cc";
+      limitMessage.style.marginTop = "1rem";
+      limitMessage.style.textAlign = "center";
+      limitMessage.innerHTML = `
+        <div style="color: #8b5e3c; font-weight: 500;">
+          Maximum limit of 999 applications reached. Please contact the administrator.
+        </div>
+      `;
+      document.getElementById("form-container").appendChild(limitMessage);
+      return;
+    }
+
+    const submitBtn = document.getElementById("submit-btn");
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Submitting...";
+
+    const otherInput = document.getElementById("support-other-input");
+    const supportSeekingOther =
+      selections.supportSeeking === "other" && otherInput
+        ? otherInput.value
+        : "";
+
+    const quizResult = calculateQuizResult();
+
+    const applicationData = {
+      id: Date.now().toString(),
+      framework_understanding: selections.frameworkUnderstanding,
+      quiz_result: quizResult,
+      quiz_answers: JSON.stringify(quizAnswers),
+      first_name: document.getElementById("first-name").value,
+      last_name: document.getElementById("last-name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      birthdate: document.getElementById("birthdate").value,
+      pronouns: selections.pronouns,
+      zip_code: document.getElementById("zip-code").value,
+      referred: selections.referred,
+      referrer_name:
+        selections.referred === "yes"
+          ? document.getElementById("referrer-name").value
+          : "",
+      commitment_choice: selections.commitment,
+      money_conversation_preference: selections.moneyCommunication,
+      affordability_preference: selections.affordabilityPreference,
+      support_seeking: selections.supportSeeking,
+      support_seeking_other: supportSeekingOther,
+      memories_before: selections.memoriesBefore,
+      memories_explanation: document.getElementById("memories-explanation")
+        ? document.getElementById("memories-explanation").value
+        : "",
+      trusted_person: document.getElementById("trusted-person")
+        ? document.getElementById("trusted-person").value
+        : "",
+      trusted_person_description: document.getElementById(
+        "trusted-person-description"
+      )
+        ? document.getElementById("trusted-person-description").value
+        : "",
+      boundaries: Array.from(selections.boundaries).join(", "),
+      healed_self_vision: document.getElementById("healed-self-vision")
+        ? document.getElementById("healed-self-vision").value
+        : "",
+      fault_beliefs: selections.faultBeliefs || "",
+      private_space_agreement: selections.privateSpace,
+      willingness_explore: selections.willingness,
+      readiness_level: selections.readiness,
+      submitted_at: new Date().toISOString(),
+    };
+
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbxYdhYxcwdabNaJ46LTGvTavR0K6xyTSZCtoBPqGICkBa6kxOfmNo8rSEQS_LCrsppwqg/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: JSON.stringify(applicationData),
+        }
+      );
+
+      console.log("Posted to Google Script (no-cors; response not readable).");
+      showSuccess(quizResult);
+    } catch (error) {
+      console.error("Error posting to Google Script:", error);
+
+      const errorMessage = document.createElement("div");
+      errorMessage.className = "card";
+      errorMessage.style.backgroundColor = "#f0e1cc";
+      errorMessage.style.marginTop = "1rem";
+      errorMessage.style.textAlign = "center";
+      errorMessage.innerHTML = `
+        <div style="color: #8b5e3c; font-weight: 500;">
+          There was an error submitting your application. Please try again.
+        </div>
+      `;
+      document.getElementById("form-container").appendChild(errorMessage);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
+  }
+
+  // ---------- RESET ----------
+  function resetForm() {
+    document
+      .querySelectorAll(
+        'input[type="text"], input[type="tel"], input[type="email"], input[type="date"], textarea'
+      )
+      .forEach((input) => {
+        input.value = "";
+      });
+
+    for (const key in selections) {
+      if (selections[key] instanceof Set) {
+        selections[key].clear();
+      } else {
+        selections[key] = null;
+      }
+    }
+
+    for (const key in quizAnswers) {
+      quizAnswers[key] = null;
+    }
+
+    document
+      .querySelectorAll(".option-row, .inline-radio-option")
+      .forEach((row) => {
+        row.classList.remove("option-selected", "inline-radio-selected");
+        const radio = row.querySelector(".radio");
+        if (radio) {
+          radio.classList.remove("radio-selected");
+          const dot = radio.querySelector(".radio-dot");
+          if (dot) dot.style.display = "none";
+        }
+        const checkbox = row.querySelector(".checkbox");
+        if (checkbox) {
+          checkbox.classList.remove("checkbox-selected");
+          const mark = checkbox.querySelector(".checkbox-mark");
+          if (mark) mark.style.display = "none";
+        }
+      });
+
+    const referrerBlock = document.getElementById("referrer-block");
+    const referrerName = document.getElementById("referrer-name");
+    if (referrerBlock && referrerName) {
+      referrerBlock.style.display = "none";
+      referrerName.required = false;
+      referrerName.value = "";
+    }
+
+    const memBlock = document.getElementById("memories-explanation-block");
+    const memTextarea = document.getElementById("memories-explanation");
+    if (memBlock && memTextarea) {
+      memBlock.style.display = "none";
+      memTextarea.required = false;
+      memTextarea.value = "";
+    }
+
+    const trustedDetailsBlock = document.getElementById(
+      "trusted-person-details-block"
+    );
+    const trustedPersonInput = document.getElementById("trusted-person");
+    const trustedPersonDesc = document.getElementById(
+      "trusted-person-description"
+    );
+    if (trustedDetailsBlock && trustedPersonInput && trustedPersonDesc) {
+      trustedDetailsBlock.style.display = "none";
+      trustedPersonInput.required = false;
+      trustedPersonDesc.required = false;
+      trustedPersonInput.value = "";
+      trustedPersonDesc.value = "";
+    }
+
+    document.getElementById("form-pages").style.display = "block";
+    document.getElementById("success-container").style.display = "none";
+
+    const existingError = document.getElementById("validation-error-card");
+    if (existingError) existingError.remove();
+
+    goToPage(1);
+  }
+
+  // ---------- INIT ----------
+  function initApp() {
+    // Title / subtitle
+    const titleEl = document.getElementById("form-title");
+    const subtitleEl = document.getElementById("form-subtitle");
+    const submitTextEl = document.getElementById("submit-button-text");
+    if (titleEl) titleEl.textContent = defaultConfig.form_title;
+    if (subtitleEl) {
+      const parts = defaultConfig.form_subtitle.split("\n");
+      subtitleEl.innerHTML = parts
+        .map((line) => `<span class="subtitle-line">${line}</span>`)
+        .join("");
+    }
+    if (submitTextEl)
+      submitTextEl.textContent = defaultConfig.submit_button_text;
+
+    // Quiz questions
+    renderQuizQuestion("quiz-q1", quizQuestions[0]);
+    renderQuizQuestion("quiz-q2", quizQuestions[1]);
+    renderQuizQuestion("quiz-q3", quizQuestions[2]);
+    renderQuizQuestion("quiz-q4", quizQuestions[3]);
+    renderQuizQuestion("quiz-q5", quizQuestions[4]);
+    renderQuizQuestion("quiz-q6", quizQuestions[5]);
+    renderQuizQuestion("quiz-q7", quizQuestions[6]);
+    renderQuizQuestion("quiz-q8", quizQuestions[7]);
+    renderQuizQuestion("quiz-q9", quizQuestions[8]);
+    renderQuizQuestion("quiz-q10", quizQuestions[9]);
+    renderQuizQuestion("quiz-q11", quizQuestions[10]);
+    renderQuizQuestion("quiz-q12", quizQuestions[11]);
+
+    // Radios / checkboxes
+    renderRadioOptions(
+      "framework-understanding-options",
+      formData.frameworkUnderstanding,
+      "frameworkUnderstanding"
+    );
+    renderRadioOptions(
+      "support-seeking-options",
+      formData.supportSeeking,
+      "supportSeeking"
+    );
+    renderInlineRadioOptions(
+      "memories-before-options",
+      formData.memoriesBefore,
+      "memoriesBefore"
+    );
+    renderInlineRadioOptions(
+      "trusted-person-options",
+      formData.trustedPerson,
+      "trustedPerson"
+    );
+    renderCheckboxOptions(
+      "boundaries-options",
+      formData.boundaries,
+      "boundaries"
+    );
+    renderRadioOptions(
+      "fault-beliefs-options",
+      formData.faultBeliefs,
+      "faultBeliefs"
+    );
+    renderInlineRadioOptions(
+      "private-space-options",
+      formData.privateSpace,
+      "privateSpace"
+    );
+    renderRadioOptions(
+      "willingness-options",
+      formData.willingness,
+      "willingness"
+    );
+    renderRadioOptions(
+      "readiness-options",
+      formData.readiness,
+      "readiness"
+    );
+    renderRadioOptions(
+      "commitment-options",
+      formData.commitment,
+      "commitment"
+    );
+    renderRadioOptions(
+      "money-communication-options",
+      formData.moneyCommunication,
+      "moneyCommunication"
+    );
+    renderRadioOptions(
+      "affordability-options",
+      formData.affordabilityPreference,
+      "affordabilityPreference"
+    );
+    renderInlineRadioOptions(
+      "referred-options",
+      formData.referred,
+      "referred"
+    );
+    renderInlineRadioOptions(
+      "pronouns-options",
+      formData.pronouns,
+      "pronouns"
+    );
+
+    // Nav buttons
+    const navMap = [
+      { prev: "prev-1", next: "next-1", page: 1 },
+      { prev: "prev-2", next: "next-2", page: 2 },
+      { prev: "prev-3", next: "next-3", page: 3 },
+      { prev: "prev-4", next: "next-4", page: 4 },
+      { prev: "prev-5", next: "next-5", page: 5 },
+      { prev: "prev-6", next: null, page: 6 },
+    ];
+    navMap.forEach(({ prev, next, page }) => {
+      const prevBtn = document.getElementById(prev);
+      if (prevBtn) prevBtn.addEventListener("click", () => goToPage(page - 1));
+      if (next) {
+        const nextBtn = document.getElementById(next);
+        if (nextBtn)
+          nextBtn.addEventListener("click", () => goToPage(page + 1));
+      }
+    });
+
+    const submitBtn = document.getElementById("submit-btn");
+    if (submitBtn)
+      submitBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        handleFormSubmit();
+      });
+
+    const resetBtn = document.getElementById("reset-btn");
+    if (resetBtn) resetBtn.addEventListener("click", resetForm);
+
+    const backToFormBtn = document.getElementById("back-to-form-btn");
+    if (backToFormBtn)
+      backToFormBtn.addEventListener("click", hideProfilesView);
+
+    goToPage(1);
+  }
+
+  document.addEventListener("DOMContentLoaded", initApp);
 </script>
-
 
 <!-- Cloudflare snippet (unchanged from your original) -->
 <script>
