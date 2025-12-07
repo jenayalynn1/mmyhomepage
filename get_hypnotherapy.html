@@ -1767,6 +1767,23 @@ const applicationData = {
   submitted_at: new Date().toISOString()
 };
 
+  // ----------------------------------------------------
+// Send application data to Google Sheets via Apps Script
+// ----------------------------------------------------
+fetch("https://script.google.com/macros/s/AKfycbxYdhYxcwdabNaJ46LTGvTavR0K6xyTSZCtoBPqGICkBa6kxOfmNo8rSEQS_LCrsppwqg/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(applicationData)
+})
+  .then(response => response.json())
+  .then(result => {
+    console.log("Google Script response:", result);
+  })
+  .catch(error => {
+    console.error("Error posting to Google Script:", error);
+  });
 
 let result = null;
 
