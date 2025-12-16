@@ -743,15 +743,15 @@
       ×
     </button>
 
-    <div style="width: 100%; height: 650px; overflow: auto; padding: 15px;">
-      <a href="core_offerings.html"
-   id="core_offerings-button"
-   class="btn-primary px-10 py-4 text-lg font-normal rounded-full"
-   style="background-color: #E7CBA4; color: #3C3A37; letter-spacing: 0.02em;"
-   onclick="openCoreOfferingsPopup(event)">
-  View Core Offerings
-</a>
-    </div>
+    <div style="width: 100%; height: 650px; overflow: hidden;">
+  <iframe
+    id="core-offerings-iframe"
+    src="core_offerings.html"
+    frameborder="0"
+    scrolling="yes"
+    style="width: 100%; height: 100%; border: none; display: block;">
+  </iframe>
+</div>
   </div>
 </dialog>
 
